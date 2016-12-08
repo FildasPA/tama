@@ -1,3 +1,6 @@
+#ifndef __Object
+#define __Object
+
 #include <string>
 #include <SFML/Graphics.hpp>
 
@@ -5,15 +8,18 @@
 // * Class object
 //--------------------------------------------
 
-class object
+class Object
 {
 	string name;
 	int id;
-	string descrip;
+	string description;
 	sf::Sprite sprite;
-	sf::
-	
+	sf::Texture texture;
 	
 public:
-	
+
+	Object();
+	Object(string name, int id, string picture);
 };
+
+#endif

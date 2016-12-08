@@ -23,11 +23,11 @@
 //-----------------------------------------------------------------------------
 // * Main
 //-----------------------------------------------------------------------------
-int main(int argc, char const *argv[])
+int main(/*int argc, char const *argv[]*/)
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "Coucou bob!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+	sf::RenderWindow window(sf::VideoMode(400, 400), "Coucou bob!");
+    sf::CircleShape shape(200.f);
+    shape.setFillColor(sf::Color::Blue);
 
     while (window.isOpen())
     {

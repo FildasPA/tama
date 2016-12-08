@@ -11,6 +11,7 @@ class Food: public Object
 {
 
 private:
+
 	int nutrition;
 };
 
