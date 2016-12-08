@@ -8,7 +8,7 @@ EXEC = ./TAMA
 
 
 all: makeBIN 
-	g++ src/main.cpp -o TAMA -L src/SFML -lsfml-graphics -lsfml-window -lsfml-system $(CFLAG)
+	g++ src/main.cpp -o TAMA -L src/SFML -lsfml-graphics -lsfml-window -lsfml-system
 	./$(EXEC)
 
 makeBIN:
