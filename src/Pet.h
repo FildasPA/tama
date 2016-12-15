@@ -15,7 +15,7 @@ class Pet
 	private:
 
 		// Variables
-		string name;
+		std::string name;
 		unsigned int generation;
 		unsigned int health;
 		unsigned int cleanliness;
@@ -30,6 +30,16 @@ class Pet
 		Pet();
 		~Pet();
 		void generate();
+
+		// Accesseurs
+		std::string get_name();
+		unsigned int get_generation();
+		unsigned int get_weight();
+
+		//
+		void set_name(std::string);
+		void set_generation(unsigned int);
+		void set_weight(unsigned int);
 
 		//
 		void change_happiness(int n);

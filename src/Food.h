@@ -1,17 +1,21 @@
 #ifndef __Food
 #define __Food
 
-#include <Object.h>
+#include "Object.h"
 
 //--------------------------------------------
 // * Class object
 //--------------------------------------------
 
-class Food: public Object
+class Food : public Object
 {
+	private:
+		int nutrition;
 
-private:
-	int nutrition;
+	public:
+
+		// Fonctions primaires
+		Food(unsigned int);
 };
 
 #endif

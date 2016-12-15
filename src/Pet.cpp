@@ -1,4 +1,7 @@
 
+#include <string>
+#include "Pet.h"
+
 //=============================================================================
 // ▼ Constantes
 // ----------------------------------------------------------------------------
@@ -6,11 +9,11 @@
 //=============================================================================
 namespace max
 {
-	const unsigned int health;
-	const unsigned int cleanliness;
-	const unsigned int weight;
-	const unsigned int hunger;
-	const unsigned int happiness;
+	unsigned int health;
+	unsigned int cleanliness;
+	unsigned int weight;
+	unsigned int hunger;
+	unsigned int happiness;
 }
 
 namespace variation
@@ -66,7 +69,7 @@ void Pet::generate()
 //-----------------------------------------------------------------------------
 // * Get name
 //-----------------------------------------------------------------------------
-string Pet::get_name()
+std::string Pet::get_name()
 {
 	return name;
 }
@@ -74,7 +77,7 @@ string Pet::get_name()
 //-----------------------------------------------------------------------------
 // * Set name
 //-----------------------------------------------------------------------------
-void Pet::set_name(string name)
+void Pet::set_name(std::string name)
 {
 	this->name = name;
 }
@@ -106,7 +109,7 @@ unsigned int Pet::get_weight()
 //-----------------------------------------------------------------------------
 // * Set weight
 //-----------------------------------------------------------------------------
-void Pet::set_name(unsigned int weight)
+void Pet::set_weight(unsigned int weight)
 {
 	this->weight = weight;
 }
@@ -123,8 +126,8 @@ void Pet::set_name(unsigned int weight)
 //-----------------------------------------------------------------------------
 void Pet::change_happiness(int n)
 {
-	this.happiness += 1;
-	if(this.happiness >= max::happiness) this.happiness = max::happiness;
+	this->happiness += 1;
+	if(this->happiness >= max::happiness) this->happiness = max::happiness;
 }
 
 
@@ -141,11 +144,11 @@ void Pet::change_happiness(int n)
 //-----------------------------------------------------------------------------
 void Pet::feed(int nutrition)
 {
-	this.hunger += variation::hunger * nutrition;
-	if(this.hunger > max::hunger) this.hunger = max::hunger;
+	this->hunger += variation::hunger * nutrition;
+	if(this->hunger > max::hunger) this->hunger = max::hunger;
 
-	this.weight += variation::weight * nutrition;
-	if(this.weight > max::weight) this.weight = max::weight;
+	this->weight += variation::weight * nutrition;
+	if(this->weight > max::weight) this->weight = max::weight;
 
 	change_happiness(variation::happiness::feed);
 }
@@ -157,7 +160,7 @@ void Pet::feed(int nutrition)
 //-----------------------------------------------------------------------------
 void Pet::heal()
 {
-	this.health = max::health;
+	this->health = max::health;
 
 	change_happiness(variation::happiness::heal);
 }
@@ -169,7 +172,7 @@ void Pet::heal()
 //-----------------------------------------------------------------------------
 void Pet::clean()
 {
-	this.cleanliness = max::cleanliness;
+	this->cleanliness = max::cleanliness;
 
 	change_happiness(variation::happiness::clean);
 }

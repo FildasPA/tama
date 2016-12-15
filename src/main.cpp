@@ -6,12 +6,12 @@
 // -- Dernière modification :
 //
 //=============================================================================
-
+/*
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <SFML/Graphics.hpp>
+// #include <SFML/Graphics.hpp>
 
 //=============================================================================
 // ▼ Constantes
@@ -20,7 +20,7 @@ namespace files {
 	std::string save_directory = "save";
 	std::string user_infos = save_directory + "/user.dat";
 }
-
+*/
 // Colors
 #define RESET       "\033[0m"              /* Reset */
 #define BLACK       "\033[30m"             /* Black */
@@ -40,7 +40,7 @@ namespace files {
 #define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
 #define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
-
+/*
 //=============================================================================
 // ▼ Prototypes de fonctions
 //=============================================================================
@@ -180,3 +180,4 @@ string read(const char* file_name,const char* text)
 	return line;
 }
 
+*/
