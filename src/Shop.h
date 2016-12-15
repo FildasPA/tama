@@ -1,8 +1,12 @@
+
 #ifndef __Shop
 #define __Shop
 
-#include <vector>
+#include <list>
 #include <string>
+#include "Object.h"
+#include "Food.h"
+#include "List.h"
 
 //--------------------------------------------
 // * Class object
@@ -10,18 +14,31 @@
 
 class Shop
 {
-	vector<Object> Storage;
-	int FirstID;
-	int CurrID;
-	
-public:
+	private:
+		std::list<Object> Storage;
+		List list;
 
-	Shop();
-	void CreateRandomObject();
-	void RandomObjects(int number);
-	void CreateObject(string name, string description, string picture, int nutrition=0);
-	void DisplayStorage();
-	void buy(int id);	
+	public:
+
+		// Fonctions primaires
+		Shop();
+
+		// Créer objets
+		void generateObjects();
+		void createObject();
+		void createFood();
+
+		// Affichage
+		// void
+
+		// Opérations
+		void buySelectedObject();
+		void updateList();
+
+		void createRandomObject();
+		void randomObjects(unsigned int number);
+		void createObject(std::string name, std::string description, std::string picture, int nutrition=0);
+		void displayStorage();
 };
 
 #endif

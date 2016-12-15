@@ -1,25 +1,35 @@
+
 #ifndef __Object
 #define __Object
 
 #include <string>
-#include <SFML/Graphics.hpp>
+// #include <SFML/Graphics.hpp>
 
-//--------------------------------------------
-// * Class object
-//--------------------------------------------
+
+
+//=============================================================================
+// ▼ Object
+// ----------------------------------------------------------------------------
+//
+//=============================================================================
 
 class Object
 {
-	string name;
-	int id;
-	string description;
-	sf::Sprite sprite;
-	sf::Texture texture;
-	
-public:
+	private:
+		unsigned int id;
+		std::string name;
+		std::string description;
+		// sf::Sprite sprite;
+		// sf::Texture texture;
 
-	Object();
-	Object(string name, int id, string picture);
+	public:
+
+		// Fonctions primaires
+		Object();
+		Object(unsigned int);
+		Object(unsigned int,std::string,std::string);
+		// Object(unsigned int,string,string);
+
 };
 
 #endif
