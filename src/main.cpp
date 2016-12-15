@@ -11,7 +11,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-
+#include <SFML/Graphics.hpp>
 
 //=============================================================================
 // ▼ Constantes
@@ -64,12 +64,29 @@ void get_user_infos();
 //-----------------------------------------------------------------------------
 int main(int argc, char const *argv[])
 {
-	start();
-	post_start();
-	update();
-	pre_terminate();
-	terminate();
+	// start();
+	// post_start();
+	// update();
+	// pre_terminate();
+	// terminate();
 
+	sf::RenderWindow window(sf::VideoMode(400, 400), "Coucou bob!");
+	sf::CircleShape shape(200.f);
+	shape.setFillColor(sf::Color::Blue);
+
+	while (window.isOpen())
+	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+		    if (event.type == sf::Event::Closed)
+		        window.close();
+		}
+
+		window.clear();
+		window.draw(shape);
+		window.display();
+	}
 	return 0;
 }
 
@@ -80,7 +97,6 @@ void start()
 {
 	get_user_infos();
 	// get_pet_infos();
-
 }
 
 //-----------------------------------------------------------------------------
@@ -139,9 +155,6 @@ void get_user_infos()
 	}
 	file.close();
 }
-
-
-#include <string>
 
 
 //-----------------------------------------------------------------------------

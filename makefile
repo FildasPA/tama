@@ -4,19 +4,12 @@ LDFLAGS  =
 SOURCES  = src
 BINARIES = bin
 
-SRC  = $(wildcard $(SOURCES)/*.cpp)
-OBJ  = $(addprefix $(BINARIES)/,$(notdir $(SRC:.cpp=.o)))
-EXEC = exe
+EXEC = ./tama
 
 
-all: makeBIN $(EXEC)
+all: makeBIN
+	g++ src/main.cpp -o $(EXEC) -L src/SFML -lsfml-graphics -lsfml-window -lsfml-system $(CFLAG)
 	./$(EXEC)
-
-exe: $(OBJ)
-	$(CC) -o $@ $^ $(LDFLAGS)
-
-$(BINARIES)/%.o: $(SOURCES)/%.cpp
-	$(CC) -o $@ -c $< $(CFLAGS)
 
 makeBIN:
 	@mkdir -p $(BINARIES)
