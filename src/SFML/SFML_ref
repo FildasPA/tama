@@ -1,0 +1,162 @@
+
+
+*************************
+*	Render window:
+*************************
+
+sf::RenderWindow window;
+sf::RenderWindow window(sf::VideoMode(texture.getSize().x, texture.getSize().y), "Coucou bob!");
+
+// window(VideoMode(longueur,largeur),"nom de la fenêtre", style optionnel)
+
+
+*************************
+*	window:
+*************************
+
+sf::Window window;
+sf::Window window(sf::VideoMode(texture.getSize().x, texture.getSize().y), "Coucou bob!");
+
+window.setVerticalSyncEnabled(true);	// activer synchronisation verticale
+window.setFramerateLimit(30);	// Limiter le framerate à X image par seconde
+
+window.close();	// Ferme la fenêtre
+window.clear();	// Nettoie la fenêtre
+window.draw(sprite);	// Dessine dans la fenêtre l'objet entre parenthèse
+window.display();	// Affiche la fenêtre
+
+window.getSize();	// Renvoie un vecteur des tailles de la fenêtre (window.getSize.x et window.getSize.y pour les séparer)
+window.setSize(Vector);	// Change la taille de la fenêtre en lui donnant un vecteur de deux coordonnées
+window.setTitle(String);	// Change le titre de la fenêtre
+	
+window.setVisible(bool);	// True = fenêtre visible, False = invisible
+window.setMouseCursorVisible(bool);	// Affiche ou cache le curseur de la souris
+** window.setMouseCursorGrabbed(bool);	// Attrape ou relache le curseur de la souris
+
+*************************
+*	Image:
+*************************
+
+sf::Image image;
+
+image.loadFromFile("ImageTest.jpg");	// Charge un fichier dans l'objet image
+image.saveToFile("SaveImage.jpg");		// Sauve l'image dans un fichier sur le disque
+
+image.getSize();	// Renvoie un vecteur qui contient la longueur et la largeur de l'image
+image.flipHorizontally();	// gauche <-> droite
+image.flipVertically();	// haut <-> bas
+
+*************************
+*	texture:
+*************************
+
+texture.loadFromFile("ImageTest.jpg");	// Charge un fichier dans la texture (le fichier doit être une image)
+texture.loadFromImage(image);	// Charge un objet "image" dans la texture
+
+texture.getSize();	// Renvoi un vecteur qui contient la longueur et la largeur de la texture
+texture.copyToImage();	// Copie les pixels de la texture dans une image (la fonction renvoie l'image)
+
+texture.update(image);	// met à jour la texture à partir d'une image
+texture.update(window);	// met à jour la texture à partir de l'image sur une fenêtre
+
+texture.setSmooth(true);		// Active ou désactive le filtre 'smooth'
+texture.setRepeated(true);		// Active ou désactive la répétition des textures
+
+*************************
+*	sprite:
+*************************
+
+sf::Sprite sprite;
+sf::Sprite sprite(texture);
+
+sprite.setTexture(texture);		// Met la texture 'texture' dans le sprite
+sprite.setColor(color);		// Met une couleur
+
+sprite.getTexture();		// Renvoie un pointeur vers la texture du sprite
+sprite.getColor();		// Renvoie la couleur du sprite
+
+sprite.setPosition(float x, float y ou vecteur);		// Change la position du sprite
+sprite.setRotation(float angle);		// Fait tourner le sprite selon l'angle demandé
+sprite.setScale(float x, float y ou vecteur);		// Change l'échelle du sprite
+
+sprite.getPosition();	// Renvoie un vecteur des positions du sprite
+sprite.getRotation();	// Renvoie un float qui indique l'orientation de l'objet
+sprite.getScale();		// Renvoie un vecteur contenant l'échelle du sprite
+
+sprite.move(float x, float y ou vecteur);		// Déplace le sprite d'un nombre donné
+sprite.rotate(float angle);		// Rotation en fonction de l'angle
+sprite.scale(float x, float y ou vecteur);	// Met le sprite à la nouvelle échelle
+
+
+*************************
+*	event:
+*************************
+
+	-KeyEvent:
+		bool alt;		// True si alt est pressé False sinon
+		bool control;		// True si control est pressé False sinon
+		bool shift;		// True si shift est pressé False sinon
+		bool system;		// True si system est pressé False sinon
+		Keyboard::Key code;	// Renvoie le code de la touche qui est pressée
+
+	-MouseButtonEvent:
+		int x;		// Position X du pointeur
+		int y;		// Position Y du pointeur
+		Mousse::Button button	// Code du bouton de la souris qui est enfoncé
+
+	-MouseMoveEvent:
+		int x;		// Position X du pointeur
+		int y;		// Position Y du pointeur
+
+	-MouseWheelEvent:
+		int x;		// Position X du pointeur
+		int y;		// Position Y du pointeur
+		int delta;	// Nombre de cran qu'a fait la molette, positif vers l'avant, négatif vers l'arrière
+
+	-SizeEvent:
+		unsigned int width;		// Nouvelle largeur en pixel
+		unsigned int height;		// Nouvelle hauteur en pixel
+
+
+	-TextEvent:
+		 Uint32 unicode;	// UTF-32 Valeur unicode du caractère
+
+
+*************************
+*	vector2:
+*************************
+	
+	Attributs:	x // coordonnée x du vecteur
+			y // coordonnée y du vecteur
+
+sf::Vector2 vector;
+sf::Vector2 vector(x,y);	// Construit et donne les bonnes coordonnées
+
+
+*************************
+*	Keyboard:
+*************************
+
+sf::Keyboard::isKeyPressed(sf::Keyboard::Left);		// True si la touche "key" est enfoncée False sinon
+sf::Keyboard::setVirtualKeyboardVisible(true);	// Cache ou montre le clavier virtuel
+
+*************************
+*	Mouse:
+*************************
+
+sf::Mouse::isButtonPressed(sf::Mouse::Left);	// Vérifie si un bouton de la souris est pressé
+sf::Mouse::getPosition();		// Renvoie un Vector2i avec les coordonnées du curseur
+	
+*************************
+*	Music:
+*************************
+
+sf::Music music;
+
+music.openFromFile("SonTest.mp3");		// Charge la musique depuis un fichier
+music.getDuration();		// Renvoie un objet "Time" qui indique la durée de la musique
+music.play();		// Démarre ou reprend la musique
+music.pause();	// Met en pause la musique
+music.stop();		// Arrête la musique
+
+music.getVolume();	// Récupère le volume de la musique
