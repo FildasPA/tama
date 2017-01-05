@@ -6,12 +6,12 @@
 // -- Dernière modification :
 //
 //=============================================================================
-/*
+
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
-// #include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 //=============================================================================
 // ▼ Constantes
@@ -20,7 +20,7 @@ namespace files {
 	std::string save_directory = "save";
 	std::string user_infos = save_directory + "/user.dat";
 }
-*/
+
 // Colors
 #define RESET       "\033[0m"              /* Reset */
 #define BLACK       "\033[30m"             /* Black */
@@ -52,7 +52,7 @@ void terminate();
 
 void get_user_infos();
 
-
+*/
 //=============================================================================
 // ▼ Main
 // ----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void get_user_infos();
 //-----------------------------------------------------------------------------
 // * Main
 //-----------------------------------------------------------------------------
-int main(int argc, char const *argv[])
+int main()
 {
 	// start();
 	// post_start();
@@ -70,26 +70,46 @@ int main(int argc, char const *argv[])
 	// pre_terminate();
 	// terminate();
 
-	sf::RenderWindow window(sf::VideoMode(400, 400), "Coucou bob!");
-	sf::CircleShape shape(200.f);
-	shape.setFillColor(sf::Color::Blue);
+	sf::Texture texture;
+
+	if (!texture.loadFromFile("Image/Background_medium.jpg"))
+	{
+    		std::cout<<" Erreur chargement de la texture! "<<std::endl;
+		return 1;
+	}
+
+	sf::RenderWindow window(sf::VideoMode(texture.getSize().x, texture.getSize().y), "Coucou bob!");
+	window.setVerticalSyncEnabled(true);
+
+
+	sf::Sprite sprite(texture);
 
 	while (window.isOpen())
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-		    if (event.type == sf::Event::Closed)
-		        window.close();
-		}
+			if (event.type == sf::Event::Closed)
+			{
+				window.close();	
+			}
+			if (event.type == sf::Event::KeyPressed)
+			{	
+				texture.loadFromFile("Image/Background.jpg");
+				window.setSize(texture.getSize());
+				sprite.setTexture(texture);
+
+				
+			}
 
 		window.clear();
-		window.draw(shape);
+		window.draw(sprite);
 		window.display();
+		}
 	}
 	return 0;
 }
-
+/*
 //-----------------------------------------------------------------------------
 // * Start
 //-----------------------------------------------------------------------------
@@ -179,5 +199,4 @@ string read(const char* file_name,const char* text)
 
 	return line;
 }
-
 */

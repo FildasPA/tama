@@ -1,0 +1,25 @@
+Background:
+
+Main_background	// Principal (and first) background
+
+Shop_background	// Background when you go to the shop
+
+MiniGame_background	// Background for a minigame
+
+Park_background	// Background when you go the the park
+
+Menu:
+
+Pause_menu	// When you press pause-button (like spacebar or enter or escape)
+
+Setting_menu	// menu to change settings (probably in the pause menu)
+
+Bag_menu	// menu to feed your monster (probably in the pause menu)
+
+Genealogy_menu	// menu to show your pet's genealogy (probably in the pause menu)
+
+MiniGame_menu	// menu to choose a mini-game (probably in the pause menu)
+
+Shop_menu	// menu to buy object, only when you go to the shop
+
+
