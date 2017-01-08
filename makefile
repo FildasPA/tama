@@ -3,18 +3,16 @@
 ################
 
 # Exécutables
-EXTAMA  = tama
-EXTEST  = test
-DEFAULT = $(EXTEST)
+EXETAMA  = tama
+EXESFML  = sfml
+EXETEST  = test
+DEFAULT  = $(EXETEST)
 
 #####################
 #   Configuration   #
 #####################
 
-# Règle par défaut
-default: makebin $(DEFAULT)
-
-# Compilateur
+# Compilateur & options
 CC      = g++
 CFLAGS  = -W -Wall -ansi -pedantic
 
@@ -22,31 +20,33 @@ CFLAGS  = -W -Wall -ansi -pedantic
 BIN     = bin
 SRC     = src
 SUBDIR  = conf entities lib main menus
+SAVES   = saves
 
 # Objets à créer par dossier
-CONF    =
+CONF    = files_names.o
 ENTI    = Food.o Object.o Pet.o User.o
-LIB     = file.o types.o
+LIB     = file.o types.o colors.o
 MAIN    = tama.o
 MENUS   = List.o Shop.o
 
-# Principaux exécutables
-SFML1   =
-SFML2   = -lsfml-system -lsfml-graphics -lsfml-window
-# SFML1   = -I./src/SFML/include
-# SFML2   = -I./src/SFML/lib -lsfml-system -lsfml-graphics -lsfml-window
+# Bibliothèques SFML
+SFMLL  = -lsfml-system -lsfml-graphics -lsfml-window
 
-TAMA1   = src/main/tama.cpp $(SFML1) -o bin/tama.o
-TAMA2   = bin/tama.o -o $(EXTAMA) $(SFML2)
+###################
+#   Dépendances   #
+###################
 
-# LTAMA   = $(CONF) $(ENTI) $(LIB)
-# OTAMA   = $(addprefix $(BIN)/,$(LTAMA))
+# Définit les dépendances pour tama
+LTAMA = $(EXETAMA).o
+DTAMA = $(addprefix $(BIN)/,$(LTAMA))
 
-# Test
-LTEST   = $(EXTEST).o $(CONF) $(ENTI) $(LIB)
-OTEST   = $(addprefix $(BIN)/,$(LTEST))
+# Définit les dépendances pour sfml
+LSFML = $(EXESFML).o
+DSFML = $(addprefix $(BIN)/,$(LSFML))
 
-# MKTAMA  = $(OTAMA)
+# Définit les dépendances pour test
+LTEST = $(EXETEST).o $(CONF) $(ENTI) $(LIB)
+DTEST = $(addprefix $(BIN)/,$(LTEST))
 
 #################
 #   Variables   #
@@ -54,66 +54,60 @@ OTEST   = $(addprefix $(BIN)/,$(LTEST))
 
 # Choisit l'exécutable par défaut s'il n'y a pas d'argument
 EXE = $(MAKECMDGOALS)
-ifeq ($(EXE),)
+ifeq ($(strip $(EXE)),)
 	EXE = $(DEFAULT)
 endif
 
-# Récupère les dépendances selon l'exécutable choisi
-ifeq ($(EXE),$(EXTAMA))
-	DEP = $(TAMA)
-else ifeq ($(EXE),$(EXTEST))
-	DEP = $(OTEST)
+# Définit la règle de compilation à appeler selon l'exécutable choisi,
+# c'est-à-dire le type de compilation à effectuer (sfml ou normal).
+# Récupère également les dépendances correspondantes.
+RULE = N$(EXE)
+ifeq ($(EXE),$(EXETAMA))
+	DEP  = $(DTAMA)
+else ifeq ($(EXE),$(EXETEST))
+	DEP = $(DTEST)
+else ifeq ($(EXE),$(EXESFML))
+	DEP  = $(DSFML)
+	RULE = S$(EXE)
 endif
+
+$(info dépendances $(DEP))
 
 # Configuration du PATH
 VPATH   = $(SRC)/%.cpp $(addprefix $(SRC)/,$(SUBDIR))
 
-################
-#   Compiler   #
-################
+########################
+#   Règle principale   #
+########################
+
+$(EXE): makedir $(RULE)
+	./$(EXE)
+
+#################################
+#   Compilation (normale) (N)   #
+#################################
 
 # Compiler les .o
 $(BIN)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 # Compiler et exécuter
-$(EXE): cc$(EXE) FORCE
-	./$(EXE)
+N$(EXE): CC$(EXE) ;
 
 # Compiler un exécutable
-cc$(EXE): $(DEP)
-	$(CC) $(CFLAGS) $^ -o $(EXE)
+CC$(EXE): $(DEP)
+	-$(CC) $(CFLAGS) $^ -o $(EXE)
 
-##########################
-#   Compiler avec SFML   #
-##########################
+###########################
+#   Compilation SFML (F)  #
+###########################
 
 # Tamagotchi
-tama: tamao cctama FORCE
-	./$(EXE)
+S$(EXE): makedir SF$(EXE) ;
 
-tamao:
-	$(CC) -c $(TAMA1)
-
-cctama:
-	$(CC) $(TAMA2)
-
-
-############################
-#   Compiler par dossier   #
-############################
-
-# Objets de conf/
-conf: $(CONF)
-
-# Objets de entities/
-entities: $(ENTI)
-
-# Objets de lib/
-lib: $(LIB)
-
-# Objets de menu/
-menus: $(MENUS)
+SF$(EXE):
+	$(CC) -c $(SRC)/main/$(EXE).cpp -o $(BIN)/$(EXE).o
+	$(CC) $(BIN)/$(EXE).o -o $(EXE) $(SFMLL)
 
 ################
 #   Nettoyer   #
@@ -126,8 +120,9 @@ clean:
 # Tout nettoyer
 mrproper: clean
 	rm -rf $(BIN)
-	rm -f  $(EXTAMA)
-	rm -f  $(EXTEST)
+	rm -f  $(EXETAMA)
+	rm -f  $(EXETEST)
+	rm -f  $(EXESFML)
 
 zero: mrproper
 
@@ -135,8 +130,9 @@ zero: mrproper
 #   Autres   #
 ##############
 
-# Créer le dossier bin
-makebin:
+# Créer les dossiers nécessaires
+makedir:
 	mkdir -p $(BIN)
+	mkdir -p $(SAVES)
 
 FORCE:
