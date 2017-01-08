@@ -29,7 +29,10 @@
 *.app
 
 # Perso
-bin/*
-TAMA
 *~
+bin/*
+save/*
+TAMA
+tama
 test
+
