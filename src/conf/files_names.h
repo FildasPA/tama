@@ -6,9 +6,9 @@
 
 namespace files
 {
-	static std::string saveDirectory = "save";
-	static std::string userInfos     = saveDirectory + "/user.dat";
-	static std::string petInfos      = saveDirectory + "/pet.dat";
+	extern std::string saveDirectory;
+	extern std::string userInfos;
+	extern std::string petInfos;
 }
 
 #endif
