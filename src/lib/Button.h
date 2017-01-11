@@ -9,18 +9,20 @@
 #define __button
 
 #include <SFML/Graphics.hpp>
+using namespace sf;
 
-class Button 
+class Button
 {
-	sf::Texture Texture;
-	sf::Sprite Sprite;
 
+	private:
+		Texture texture;
+		Sprite  sprite;
 
-public:
-	Button();
-	Button(Texture texture, Sprite sprite);
-	bool Click(sf::RenderWindow &window);
-	
+	public:
+
+		Button(const char*);
+		bool isClicked(sf::RenderWindow &window);
+
 
 };
 

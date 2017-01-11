@@ -1,31 +1,32 @@
 
+#include <iostream>
 #include <SFML/Graphics.hpp>
-#include "button.h"
+#include "Button.h"
 
-Button::Button()
+using namespace sf;
+
+//-----------------------------------------------------------------------------
+// * Constructeur
+//-----------------------------------------------------------------------------
+Button::Button(const char* fileName)
 {
-	texture = NULL;
-	sprite  = NULL;
+	if(!texture.loadFromFile(fileName))
+		std::cerr << "Erreur chargement de la texture " << fileName << std::endl;
+	else
+		sprite.setTexture(texture);
 }
 
-
-
-bool Button::Click(RenderWindow &window)
+//-----------------------------------------------------------------------------
+// * Is button clicked?
+//-----------------------------------------------------------------------------
+bool Button::isClicked(RenderWindow &window)
 {
-
 	int mouseX = Mouse::getPosition(window).x;
 	int mouseY = Mouse::getPosition(window).y;
 
-	if(mouseX > Sprite.getPosition().x
-	&& mouseX < (Sprite.getPosition().x + Sprite.getGlobalBounds().width)
-	&& mouseY > Sprite.getPosition().y)
-	&& mouseY < (Sprite.getPosition().y + Sprite.getGlobalBounds().height) {
-
-		if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			return true;
-		}
-
-		return false;
-	}
-return false;
+	return (mouseX > sprite.getPosition().x &&
+	        mouseY > sprite.getPosition().y &&
+	        mouseX < (sprite.getPosition().x + sprite.getGlobalBounds().width) &&
+	        mouseY < (sprite.getPosition().y + sprite.getGlobalBounds().height) &&
+	        Mouse::isButtonPressed(Mouse::Left));
 }
