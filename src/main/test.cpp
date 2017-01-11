@@ -129,9 +129,16 @@ int main(int argc, char const *argv[])
 	system("clear");
 	init();
 
-	pet->printCharacteristics();
 	std::cout << std::endl;
 	user->print();
+	pet->printCharacteristics();
+	// pet->generate(0);
+
+	pet->degradeState();
+	pet->degradeState();
+	pet->writeInfos();
+
+	pet->printCharacteristics();
 
 	// callMainMenu();
 

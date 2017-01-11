@@ -16,15 +16,17 @@
 //
 //=============================================================================
 
+// Default Pet characteristics
 namespace defaultChara
 {
-	unsigned int health      = 0;
-	unsigned int cleanliness = 0;
-	unsigned int weight      = 0;
-	unsigned int hunger      = 0;
-	unsigned int happiness   = 0;
+	unsigned int health      = 50;
+	unsigned int cleanliness = 50;
+	unsigned int weight      = 50;
+	unsigned int hunger      = 50;
+	unsigned int happiness   = 25;
 }
 
+// Max Pet values
 namespace max
 {
 	unsigned int health      = 100;
@@ -34,13 +36,17 @@ namespace max
 	unsigned int happiness   = 5;
 }
 
+// Variations after 1 minute left
 namespace variation
 {
+	unsigned int health = 1;
 	unsigned int hunger = 1;
 	unsigned int weight = 1;
+	unsigned int cleanliness = 1;
 
 	namespace happiness
 	{
+		const int general = 1;
 		const int feed  = 1;
 		const int heal  = 1;
 		const int clean = 1;
@@ -56,8 +62,8 @@ namespace variation
 //-----------------------------------------------------------------------------
 // * Constructeur
 // Si un fichier pet existe, récupère les informations qui s'y trouvent.
-// Sinon, génère un nouveau Pet avant de l'écrire ses caractéristiques dans
-// un fichier.
+// Sinon, génère un nouveau Pet avant d'écrire ses caractéristiques dans un
+// fichier.
 //-----------------------------------------------------------------------------
 Pet::Pet()
 {
@@ -138,7 +144,6 @@ unsigned int Pet::getHunger() { return hunger; }
 unsigned int Pet::getHappiness() { return happiness; }
 
 
-
 //=============================================================================
 // ▼ Mutateurs
 // ----------------------------------------------------------------------------
@@ -202,6 +207,31 @@ void Pet::setValueFromString(std::string parameter, std::string value,
 	}
 }
 
+
+//=============================================================================
+// ▼ Category
+// ----------------------------------------------------------------------------
+// Description
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// * Decrease hunger
+//-----------------------------------------------------------------------------
+void Pet::decreaseHunger(int nutrition)
+{
+	this->hunger -= nutrition;
+	if(this->hunger < 0) this->hunger = 0;
+}
+
+//-----------------------------------------------------------------------------
+// * Increase weigth
+//-----------------------------------------------------------------------------
+void Pet::increaseWeight(int nutrition)
+{
+	this->weight += nutrition;
+	if(this->weight > max::weight) this->weight = max::weight;
+}
+
 //-----------------------------------------------------------------------------
 // * Increase happiness
 //-----------------------------------------------------------------------------
@@ -211,57 +241,191 @@ void Pet::changeHappiness(int n)
 	if(this->happiness >= max::happiness) this->happiness = max::happiness;
 }
 
-
 //=============================================================================
 // ▼ Actions
 // ----------------------------------------------------------------------------
-//
+// Définit les actions effectuées par le joueur.
 //=============================================================================
 
 //-----------------------------------------------------------------------------
 // * Feed
-// Decrease hunger and increase weight.
-// Increase happiness.
+// Diminue la faim et augmente le poids selon la valeur nutrition de la
+// nourriture donnée.
+// Augmente le bonheur de manière constante.
 //-----------------------------------------------------------------------------
 void Pet::feed(int nutrition)
 {
-	this->hunger += variation::hunger * nutrition;
-	if(this->hunger > max::hunger) this->hunger = max::hunger;
-
-	this->weight += variation::weight * nutrition;
-	if(this->weight > max::weight) this->weight = max::weight;
-
+	decreaseHunger(nutrition);
+	increaseWeight(nutrition);
 	changeHappiness(variation::happiness::feed);
 }
 
 //-----------------------------------------------------------------------------
 // * Heal
-// Set "health" attribute to max.
-// Increase happiness.
+// Met la valeur 'health' au maximum.
+// Augmente le bonheur.
 //-----------------------------------------------------------------------------
 void Pet::heal()
 {
-	this->health = max::health;
-
+	setHealth(max::health);
 	changeHappiness(variation::happiness::heal);
 }
 
 //-----------------------------------------------------------------------------
 // * Wash
-// Set "cleanliness" attribute to max.
-// Increase happiness.
+// Met la valeur 'cleanliness' au maximum.
+// Augmente le bonheur.
 //-----------------------------------------------------------------------------
-void Pet::clean()
+void Pet::wash()
 {
-	this->cleanliness = max::cleanliness;
-
+	setCleanliness(max::cleanliness);
 	changeHappiness(variation::happiness::clean);
 }
 
+
 //=============================================================================
-// ▼ File
+// ▼ Vérifications
 // ----------------------------------------------------------------------------
-//
+// Renvoie l'état du familier (mort, faim, sale, malheureux, heureux).
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// * Is dead
+//-----------------------------------------------------------------------------
+bool Pet::isDead()
+{
+	return dead;
+}
+
+//-----------------------------------------------------------------------------
+// * Is hungry
+//-----------------------------------------------------------------------------
+bool Pet::isHungry()
+{
+	return hungry;
+}
+
+//-----------------------------------------------------------------------------
+// * Is clean
+//-----------------------------------------------------------------------------
+bool Pet::isDirty()
+{
+	return dirty;
+}
+
+//-----------------------------------------------------------------------------
+// * Is sad
+//-----------------------------------------------------------------------------
+bool Pet::isSad()
+{
+	return sad;
+}
+
+//-----------------------------------------------------------------------------
+// * Is happy
+//-----------------------------------------------------------------------------
+bool Pet::isHappy()
+{
+	return happy;
+}
+
+
+//=============================================================================
+// ▼ Met à jour l'état (dégradation) selon le temps écoulé
+// ----------------------------------------------------------------------------
+// Les charactéristiques du familier se dégradent au fil du temps qui
+// s'écoule.
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// * Update state
+// Met à jour les caractéristiques du familier.
+//-----------------------------------------------------------------------------
+void Pet::degradeState()
+{
+	health      -= variation::health;
+	cleanliness -= variation::cleanliness;
+	weight      -= variation::weight;
+	hunger      += variation::hunger;
+	happiness   -= variation::happiness::general;
+}
+
+//-----------------------------------------------------------------------------
+// * Change stateAccordingToPassedTime
+//-----------------------------------------------------------------------------
+void Pet::changeStateAccordingToPassedTime(unsigned int minutesPassed)
+{
+	for(unsigned int i = 0 ; i < minutesPassed ; i++)
+		updateState();
+}
+
+
+//=============================================================================
+// ▼ Etats
+// ----------------------------------------------------------------------------
+// Vérifie et modifie les états du familier (malade, sale, faim, heureux).
+//=============================================================================
+
+
+//-----------------------------------------------------------------------------
+// * Update state
+//-----------------------------------------------------------------------------
+void Pet::updateState()
+{
+	checkAliveState();
+	checkHealthState();
+	checkCleanlinessState();
+	checkHungerState();
+	checkHappinessState();
+	checkAliveState();
+}
+
+//-----------------------------------------------------------------------------
+// * Check Alive state
+//-----------------------------------------------------------------------------
+void Pet::checkAliveState()
+{
+	dead = (health == 0 || cleanliness == 0 || weight == 0 || hunger == 100);
+}
+
+//-----------------------------------------------------------------------------
+// * Check health state
+//-----------------------------------------------------------------------------
+void Pet::checkHealthState()
+{
+	sick = (health < 50);
+}
+
+//-----------------------------------------------------------------------------
+// * Check cleanliness state
+//-----------------------------------------------------------------------------
+void Pet::checkCleanlinessState()
+{
+	dirty = (cleanliness < 50);
+}
+
+//-----------------------------------------------------------------------------
+// * Check hunger state
+//-----------------------------------------------------------------------------
+void Pet::checkHungerState()
+{
+	hungry = (hunger > 50);
+}
+
+//-----------------------------------------------------------------------------
+// * Check happiness state
+//-----------------------------------------------------------------------------
+void Pet::checkHappinessState()
+{
+	sad   = (happiness < 25);
+	happy = (happiness > 75);
+}
+
+
+//=============================================================================
+// ▼ Fichiers
+// ----------------------------------------------------------------------------
+// Lit et écrit les informations du familier dans un fichier.
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -324,7 +488,7 @@ void Pet::writeInfos()
 //=============================================================================
 
 //-----------------------------------------------------------------------------
-// * Afficher
+// * Affiche les charactéristiques du familier dans la console
 //-----------------------------------------------------------------------------
 void Pet::printCharacteristics()
 {
