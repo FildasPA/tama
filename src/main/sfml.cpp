@@ -74,24 +74,54 @@ int main()
 	// pre_terminate();
 	// terminate();
 
-	sf::Texture texture;
+	sf::Texture textureBackground;
+	sf::Texture texturePause;
+	sf::Texture textureResume;
+	sf::Texture textureSetting;
+	sf::Texture textureReset;
 
 
-	if (!texture.loadFromFile("images/lac.jpg"))
+	if (!textureBackground.loadFromFile("images/lac.jpg"))
 	{
     		std::cout<<" Erreur chargement de la texture! "<<std::endl;
 		return 1;
 	}
+
+	if (!texturePause.loadFromFile("images/Background_medium.jpg"))
+				{
+    					std::cout<<" Erreur chargement de la texture! "<<std::endl;
+					return 1;
+				}
+/*
+	if (!textureResume.loadFromFile("images/lac.jpg"))
+	{
+    		std::cout<<" Erreur chargement de la texture! "<<std::endl;
+		return 1;
+	}
+
+	if (!textureSetting.loadFromFile("images/lac.jpg"))
+	{
+    		std::cout<<" Erreur chargement de la texture! "<<std::endl;
+		return 1;
+	}
+*/
+	if (!textureReset.loadFromFile("images/reset.png"))
+	{
+    		std::cout<<" Erreur chargement de la texture! "<<std::endl;
+		return 1;
+	}
+
 
 	sf::RenderWindow window(sf::VideoMode(1024, 760), "Nom de la fenêtre");
 	window.setVerticalSyncEnabled(true);
 
 	string State = "";
 
-	sf::Sprite sprite(texture);
-	sf::Sprite menuResume;
-	sf::Sprite menuSetting;
-	sf::Sprite menuReset;
+	sf::Sprite backGround(textureBackground);
+	sf::Sprite pause(texturePause);
+	//sf::Sprite menuResume(textureResume);
+	//sf::Sprite menuSetting(textureSetting);
+	sf::Sprite menuReset(textureReset);
 
 	while (window.isOpen())
 	{
@@ -106,13 +136,7 @@ int main()
 			{
 
 				cout<<"Hello"<<endl;
-
-				if (!texture.loadFromFile("images/Background_medium.jpg"))
-				{
-    					std::cout<<" Erreur chargement de la texture! "<<std::endl;
-					return 1;
-				}
-				sprite.setTexture(texture);
+				window.draw(pause);
 /*
 				if (!texture.loadFromFile("images/Resume.jpg"))
 				{
@@ -128,23 +152,13 @@ int main()
 				}
 				menuSetting.setTexture(texture);
 */
-				if (!texture.loadFromFile("images/reset.png"))
-				{
-    					std::cout<<" Erreur chargement de la texture! "<<std::endl;
-					return 1;
-				}
-				menuReset.setTexture(texture);
-				menuReset.setPosition(15,15);
-
+				//menuReset.setPosition(100,100);
 				window.draw(menuReset);	// voir si pas de conflit avec window.clear plus bas
 			}
-			
-
-		window.clear();
-		window.draw(sprite);
-		window.display();
 		}
-		
+		window.clear();
+		window.draw(backGround);
+/*		
 		if(State == "Menu1")
 		{
 			if (!texture.loadFromFile("images/Menu1.jpg"))
@@ -154,7 +168,6 @@ int main()
 			}
 			sprite.setTexture(texture);
 
-			window.clear();
 			window.draw(sprite);
 			window.display();
 		}
@@ -168,7 +181,6 @@ int main()
 			}
 			sprite.setTexture(texture);
 
-			window.clear();
 			window.draw(sprite);
 			window.display();
 		}
@@ -182,11 +194,10 @@ int main()
 			}
 			sprite.setTexture(texture);
 
-			window.clear();
 			window.draw(sprite);
 			window.display();
 		}
-		
+*/		
 	}
 	return 0;
 }
