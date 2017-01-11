@@ -6,7 +6,7 @@
 EXETAMA  = tama
 EXESFML  = sfml
 EXETEST  = test
-DEFAULT  = $(EXETEST)
+DEFAULT  = $(EXESFML)
 
 #####################
 #   Configuration   #

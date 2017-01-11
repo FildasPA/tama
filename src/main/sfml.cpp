@@ -13,6 +13,9 @@
 #include <fstream>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include "../lib/button.h"
+
+using namespace std;
 
 //=============================================================================
 // ▼ Constantes
@@ -73,17 +76,22 @@ int main()
 
 	sf::Texture texture;
 
-	if (!texture.loadFromFile("images/Background_medium.jpg"))
+
+	if (!texture.loadFromFile("images/lac.jpg"))
 	{
     		std::cout<<" Erreur chargement de la texture! "<<std::endl;
 		return 1;
 	}
 
-	sf::RenderWindow window(sf::VideoMode(texture.getSize().x, texture.getSize().y), "Coucou bob!");
+	sf::RenderWindow window(sf::VideoMode(1024, 760), "Nom de la fenêtre");
 	window.setVerticalSyncEnabled(true);
 
+	string State = "";
 
 	sf::Sprite sprite(texture);
+	sf::Sprite menuResume;
+	sf::Sprite menuSetting;
+	sf::Sprite menuReset;
 
 	while (window.isOpen())
 	{
@@ -94,19 +102,91 @@ int main()
 			{
 				window.close();
 			}
-			if (event.type == sf::Event::KeyPressed)
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
 			{
-				texture.loadFromFile("images/Background.jpg");
-				window.setSize(texture.getSize());
+
+				cout<<"Hello"<<endl;
+
+				if (!texture.loadFromFile("images/Background_medium.jpg"))
+				{
+    					std::cout<<" Erreur chargement de la texture! "<<std::endl;
+					return 1;
+				}
 				sprite.setTexture(texture);
+/*
+				if (!texture.loadFromFile("images/Resume.jpg"))
+				{
+    					std::cout<<" Erreur chargement de la texture! "<<std::endl;
+					return 1;
+				}
+				menuResume.setTexture(texture);
 
+				if (!texture.loadFromFile("images/Setting.jpg"))
+				{
+    					std::cout<<" Erreur chargement de la texture! "<<std::endl;
+					return 1;
+				}
+				menuSetting.setTexture(texture);
+*/
+				if (!texture.loadFromFile("images/reset.png"))
+				{
+    					std::cout<<" Erreur chargement de la texture! "<<std::endl;
+					return 1;
+				}
+				menuReset.setTexture(texture);
+				menuReset.setPosition(15,15);
 
+				window.draw(menuReset);	// voir si pas de conflit avec window.clear plus bas
 			}
+			
 
 		window.clear();
 		window.draw(sprite);
 		window.display();
 		}
+		
+		if(State == "Menu1")
+		{
+			if (!texture.loadFromFile("images/Menu1.jpg"))
+			{
+    				std::cout<<" Erreur chargement de la texture! "<<std::endl;
+				return 1;
+			}
+			sprite.setTexture(texture);
+
+			window.clear();
+			window.draw(sprite);
+			window.display();
+		}
+
+		if(State == "Menu2")
+		{
+			if (!texture.loadFromFile("images/Menu2.jpg"))
+			{
+    				std::cout<<" Erreur chargement de la texture! "<<std::endl;
+				return 1;
+			}
+			sprite.setTexture(texture);
+
+			window.clear();
+			window.draw(sprite);
+			window.display();
+		}
+
+		if(State == "Menu3")
+		{
+			if (!texture.loadFromFile("iamges/Menu3.jpg"))
+			{
+    				std::cout<<" Erreur chargement de la texture! "<<std::endl;
+				return 1;
+			}
+			sprite.setTexture(texture);
+
+			window.clear();
+			window.draw(sprite);
+			window.display();
+		}
+		
 	}
 	return 0;
 }
