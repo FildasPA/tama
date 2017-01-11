@@ -6,6 +6,7 @@ namespace files
 {
 	std::string saveDirectory = "saves";
 
-	std::string userInfos     = saveDirectory + "/user.dat";
-	std::string petInfos      = saveDirectory + "/pet.dat";
+	std::string userInfos       = saveDirectory + "/user.dat";
+	std::string petInfos        = saveDirectory + "/pet.dat";
+	std::string lastSessionDate = saveDirectory + "/last_session.dat";
 }
