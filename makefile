@@ -4,7 +4,7 @@
 
 # Exécutables
 EXETAMA  = tama
-EXESFML  = sfml2
+EXESFML  = sfml
 EXETEST  = test
 DEFAULT  = $(EXESFML)
 
@@ -25,7 +25,7 @@ SAVES   = saves
 # Objets à créer par dossier
 CONF    = files_names.o
 ENTI    = Food.o Object.o Pet.o User.o
-LIB     = file.o types.o colors.o
+LIB     = file.o types.o colors.o Button.o
 MAIN    = tama.o
 MENUS   = List.o Shop.o
 
@@ -41,7 +41,7 @@ LTAMA = $(EXETAMA).o
 DTAMA = $(addprefix $(BIN)/,$(LTAMA))
 
 # Définit les dépendances pour sfml
-LSFML = $(EXESFML).o
+LSFML = $(EXESFML).o $(LIB)
 DSFML = $(addprefix $(BIN)/,$(LSFML))
 
 # Définit les dépendances pour test
@@ -105,9 +105,9 @@ CC$(EXE): $(DEP)
 # Tamagotchi
 S$(EXE): makedir SF$(EXE) ;
 
-SF$(EXE):
+SF$(EXE): $(DSFML)
 	$(CC) -c $(SRC)/main/$(EXE).cpp -o $(BIN)/$(EXE).o
-	$(CC) $(BIN)/$(EXE).o -o $(EXE) $(SFMLL)
+	$(CC) $(DSFML) -o $(EXE) $(SFMLL)
 
 ################
 #   Nettoyer   #
