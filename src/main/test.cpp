@@ -12,7 +12,7 @@
 #include "../lib/types.h"
 #include "../lib/file.h"
 
-#include "../lib/colors.h"
+#include "../lib/colors.cpp"
 #include "../conf/files_names.h"
 
 //=============================================================================

@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "file.h"
-#include "colors.h"
+#include "colors.cpp"
 
 //-----------------------------------------------------------------------------
 // * Does file exists ?

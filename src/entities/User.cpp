@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include "../conf/files_names.h"
-#include "../lib/colors.h"
+#include "../lib/colors.cpp"
 #include "../lib/types.h"
 #include "../lib/file.h"
 #include "User.h"
