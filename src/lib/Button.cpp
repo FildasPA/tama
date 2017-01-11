@@ -4,13 +4,13 @@
 
 Button::Button()
 {
-	Texture = NULL;
-	Sprite = NULL;
+	texture = NULL;
+	sprite  = NULL;
 }
 
 
 
-bool Button::Click(RenderWindow &window) 
+bool Button::Click(RenderWindow &window)
 {
 
 	int mouseX = Mouse::getPosition(window).x;

@@ -4,7 +4,7 @@
 
 # Exécutables
 EXETAMA  = tama
-EXESFML  = sfml
+EXESFML  = sfml2
 EXETEST  = test
 DEFAULT  = $(EXESFML)
 
