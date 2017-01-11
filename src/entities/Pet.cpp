@@ -33,7 +33,7 @@ namespace max
 	unsigned int cleanliness = 100;
 	unsigned int weight      = 100;
 	unsigned int hunger      = 100;
-	unsigned int happiness   = 5;
+	unsigned int happiness   = 100;
 }
 
 // Variations after 1 minute left
@@ -298,6 +298,14 @@ bool Pet::isDead()
 }
 
 //-----------------------------------------------------------------------------
+// * Is sick
+//-----------------------------------------------------------------------------
+bool Pet::isSick()
+{
+	return sick;
+}
+
+//-----------------------------------------------------------------------------
 // * Is hungry
 //-----------------------------------------------------------------------------
 bool Pet::isHungry()
@@ -356,7 +364,7 @@ void Pet::degradeState()
 void Pet::changeStateAccordingToPassedTime(unsigned int minutesPassed)
 {
 	for(unsigned int i = 0 ; i < minutesPassed ; i++)
-		updateState();
+		degradeState();
 }
 
 

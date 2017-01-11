@@ -85,6 +85,7 @@ class Pet
 
 		// Vérifications
 		bool isDead();
+		bool isSick();
 		bool isHungry();
 		bool isDirty();
 		bool isSad();
@@ -96,6 +97,7 @@ class Pet
 
 		// Affichage
 		void printCharacteristics();
+		void changeStateAccordingToPassedTime(unsigned int);
 };
 
 #endif
