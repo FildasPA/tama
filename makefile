@@ -25,7 +25,7 @@ SAVES   = saves
 # Objets à créer par dossier
 CONF    = files_names.o
 ENTI    = Food.o Object.o Pet.o User.o
-LIB     = file.o types.o colors.o Button.o
+LIB     = file.o types.o colors.o Button.o State.o
 MAIN    = tama.o
 MENUS   = List.o Shop.o
 

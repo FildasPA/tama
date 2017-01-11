@@ -1,24 +1,29 @@
 
 //=============================================================================
-// ▼ File
+// ▼ State
 // ----------------------------------------------------------------------------
 //
 //=============================================================================
 
-#ifndef __button
-#define __button
+#ifndef __State
+#define __State
 
 #include <SFML/Graphics.hpp>
+#include <string>
+using namespace sf;
 
-class button 
+class State
 {
-	sf::Texture buttonTexture;
-	sf::Sprite buttonSprite;
 
+	private:
+		std::string state;
 
-public:
-	bool Click(sf::RenderWindow &window);
-	
+	public:
+
+		State();
+		void setState(std::string New);
+		std::string getState();
+
 
 };
 

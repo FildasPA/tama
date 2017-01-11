@@ -12,12 +12,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <unistd.h>
 #include <SFML/Graphics.hpp>
 #include "../lib/colors.cpp"
 #include "../lib/Button.h"
-#include "../lib/State.h"
-#include "../entities/Pet.h"
 
 using namespace std;
 using namespace sf;
@@ -30,14 +27,11 @@ using namespace sf;
 
 // Window
 RenderWindow window;
-State mainState;
-
-// Button
-Button* resetButton = new Button("images/reset.png");
 
 // Sprites
 namespace sprite {
 	Sprite background;
+	Sprite reset;
 }
 
 // Textures
@@ -46,9 +40,8 @@ namespace texture {
 	Texture pause;
 	Texture resume;
 	Texture setting;
+	Texture reset;
 }
-
-Pet* pet = new Pet();
 
 //=============================================================================
 // ▼ Window
@@ -90,6 +83,7 @@ void loadTextures()
 {
 	loadTexture(texture::background,"images/lac.jpg");
 	loadTexture(texture::pause,     "images/Background_medium.jpg");
+	loadTexture(texture::reset,     "images/reset.png");
 }
 
 
@@ -105,6 +99,7 @@ void loadTextures()
 void setSprites()
 {
 	sprite::background.setTexture(texture::background);
+	sprite::reset.setTexture(texture::reset);
 }
 
 //=============================================================================
@@ -118,7 +113,7 @@ void setSprites()
 //-----------------------------------------------------------------------------
 void setButton()
 {
-	//Button* resetButton = new Button("images/reset.png");
+	Button resetButton(sprite::reset);
 }
 
 
@@ -149,7 +144,7 @@ void init()
 {
 	loadTextures();
 	setSprites();
-	//setButton();
+	setButton();ww
 	createWindow();
 }
 
@@ -169,8 +164,7 @@ void update()
 
 			if((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)) {
 				std::cout << "Pause!" << std::endl;
-				mainState.setState("Menu");
-				
+				// 
 			}
 
 			if (event.type == Event::TextEntered) {
@@ -181,42 +175,8 @@ void update()
 
 	window.clear();
 	window.draw(sprite::background);
-
-if(pet->isDead() == true) { mainState.setState("Dead"); }
-if(pet->isHungry() == true) { mainState.setState("Hungry"); }
-if(pet->isDirty() == true) { mainState.setState("Dirty"); }
-if(pet->isSad() == true) { mainState.setState("Sad"); }
-if(pet->isHappy() == true) { mainState.setState("Happy"); }
-
-// mainState est l'état actuel du jeu, mainState.getState();, mainState.setState("coucou");
-
-		if(mainState.getState() == "Menu")
-		{
-			resetButton->sprite.setPosition(100,100);
-			window.draw(resetButton->sprite);
-			if (resetButton->isClicked(window) == true)
-			{
-				cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
-			}
-		}
-
-		if(mainState.getState() == "Menu")
-		{
-			resetButton->sprite.setPosition(100,100);
-			window.draw(resetButton->sprite);
-			if (resetButton->isClicked(window) == true)
-			{
-				cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
-			}
-		}
-
-
-
-
-
-
-
-
+	// window.draw(text);
+	// window.draw(shape);
 	window.display();
 	}
 }

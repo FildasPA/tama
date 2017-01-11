@@ -1,12 +1,12 @@
 
 //=============================================================================
-// ▼ File
+// ▼ Button
 // ----------------------------------------------------------------------------
 //
 //=============================================================================
 
-#ifndef __button
-#define __button
+#ifndef __Button
+#define __Button
 
 #include <SFML/Graphics.hpp>
 using namespace sf;
@@ -16,10 +16,10 @@ class Button
 
 	private:
 		Texture texture;
-		Sprite  sprite;
+		
 
 	public:
-
+		Sprite  sprite;
 		Button(const char*);
 		bool isClicked(sf::RenderWindow &window);
 
