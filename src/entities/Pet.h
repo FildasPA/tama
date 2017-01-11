@@ -14,7 +14,7 @@ class Pet
 {
 	private:
 
-		// Variables
+		// Charactéristiques
 		std::string name;
 		unsigned int generation;
 		unsigned int health;
@@ -23,6 +23,30 @@ class Pet
 		unsigned int hunger;
 		unsigned int happiness;
 
+		// Etats
+		bool dead;
+		bool sick;
+		bool dirty;
+		bool hungry;
+		bool happy, sad;
+
+		// Vérifier les états
+		void updateState();
+		void checkAliveState();
+		void checkHealthState();
+		void checkCleanlinessState();
+		void checkHungerState();
+		void checkHappinessState();
+
+		// Modifications
+		void decreaseHunger(int);
+		void increaseHunger(int);
+		void decreaseWeight(int);
+		void increaseWeight(int);
+
+		// Dégradation
+		void decayState();
+		void decayStateAccordingToPassedTime(unsigned int);
 
 	public:
 
@@ -49,12 +73,23 @@ class Pet
 		void setHunger(unsigned int);
 		void setHappiness(unsigned int);
 		void setValueFromString(std::string,std::string,bool&);
+
+		// Modifications
+		void degradeState();
 		void changeHappiness(int n);
 
 		// Actions
 		void heal();
-		void clean();
+		void wash();
 		void feed(int nutrition);
+
+		// Vérifications
+		bool isDead();
+		bool isSick();
+		bool isHungry();
+		bool isDirty();
+		bool isSad();
+		bool isHappy();
 
 		// Fichier
 		void readInfos();
@@ -62,6 +97,7 @@ class Pet
 
 		// Affichage
 		void printCharacteristics();
+		void changeStateAccordingToPassedTime(unsigned int);
 };
 
 #endif
