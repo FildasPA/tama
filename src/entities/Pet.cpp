@@ -19,30 +19,30 @@
 // Default Pet characteristics
 namespace defaultChara
 {
-	unsigned int health      = 50;
-	unsigned int cleanliness = 50;
-	unsigned int weight      = 50;
-	unsigned int hunger      = 50;
-	unsigned int happiness   = 25;
+	int health      = 50;
+	int cleanliness = 50;
+	int weight      = 50;
+	int hunger      = 50;
+	int happiness   = 25;
 }
 
 // Max Pet values
 namespace max
 {
-	unsigned int health      = 100;
-	unsigned int cleanliness = 100;
-	unsigned int weight      = 100;
-	unsigned int hunger      = 100;
-	unsigned int happiness   = 100;
+	int health      = 100;
+	int cleanliness = 100;
+	int weight      = 100;
+	int hunger      = 100;
+	int happiness   = 100;
 }
 
 // Variations after 1 minute left
 namespace variation
 {
-	unsigned int health = 1;
-	unsigned int hunger = 1;
-	unsigned int weight = 1;
-	unsigned int cleanliness = 1;
+	int health = 1;
+	int hunger = 1;
+	int weight = 1;
+	int cleanliness = 1;
 
 	namespace happiness
 	{
@@ -67,10 +67,12 @@ namespace variation
 //-----------------------------------------------------------------------------
 Pet::Pet()
 {
-	if(file::exists(files::petInfos.c_str()))
+	if(file::exists(files::petInfos.c_str())) {
 		readInfos();
+		updateCharacteristics();
+	}
 	else {
-		std::cout << "Choix de l'oeuf..." << std::endl;
+		// std::cout << "Choix de l'oeuf..." << std::endl;
 		generate(0);
 		writeInfos();
 	}
@@ -258,6 +260,19 @@ void Pet::feed(int nutrition)
 	decreaseHunger(nutrition);
 	increaseWeight(nutrition);
 	changeHappiness(variation::happiness::feed);
+	std::cout << "Feed!" << std::endl;
+	printCharacteristics();
+}
+
+//-----------------------------------------------------------------------------
+// * Play
+//-----------------------------------------------------------------------------
+void Pet::play()
+{
+	this->happiness += 20;
+	if(this->happiness >= max::happiness) this->happiness = max::happiness;
+	std::cout << "Play!" << std::endl;
+	printCharacteristics();
 }
 
 //-----------------------------------------------------------------------------
@@ -269,6 +284,8 @@ void Pet::heal()
 {
 	setHealth(max::health);
 	changeHappiness(variation::happiness::heal);
+	std::cout << "Heal!" << std::endl;
+	printCharacteristics();
 }
 
 //-----------------------------------------------------------------------------
@@ -280,6 +297,8 @@ void Pet::wash()
 {
 	setCleanliness(max::cleanliness);
 	changeHappiness(variation::happiness::clean);
+	std::cout << "Wash!" << std::endl;
+	printCharacteristics();
 }
 
 
@@ -294,7 +313,7 @@ void Pet::wash()
 //-----------------------------------------------------------------------------
 bool Pet::isDead()
 {
-	return dead;
+	return (health == 0 || cleanliness == 0 || weight == 0 || hunger == 100);
 }
 
 //-----------------------------------------------------------------------------
@@ -302,7 +321,7 @@ bool Pet::isDead()
 //-----------------------------------------------------------------------------
 bool Pet::isSick()
 {
-	return sick;
+	return (health < 50);
 }
 
 //-----------------------------------------------------------------------------
@@ -310,7 +329,7 @@ bool Pet::isSick()
 //-----------------------------------------------------------------------------
 bool Pet::isHungry()
 {
-	return hungry;
+	return (hunger > 50);
 }
 
 //-----------------------------------------------------------------------------
@@ -318,7 +337,7 @@ bool Pet::isHungry()
 //-----------------------------------------------------------------------------
 bool Pet::isDirty()
 {
-	return dirty;
+	return (cleanliness < 50);
 }
 
 //-----------------------------------------------------------------------------
@@ -326,7 +345,7 @@ bool Pet::isDirty()
 //-----------------------------------------------------------------------------
 bool Pet::isSad()
 {
-	return sad;
+	return (happiness < 25);
 }
 
 //-----------------------------------------------------------------------------
@@ -334,7 +353,7 @@ bool Pet::isSad()
 //-----------------------------------------------------------------------------
 bool Pet::isHappy()
 {
-	return happy;
+	return (happiness > 75);
 }
 
 
@@ -349,84 +368,27 @@ bool Pet::isHappy()
 // * Update state
 // Met à jour les caractéristiques du familier.
 //-----------------------------------------------------------------------------
-void Pet::degradeState()
+void Pet::degradeCharacteristics()
 {
 	health      -= variation::health;
+	if(health < 0) health = 0;
 	cleanliness -= variation::cleanliness;
+	if(cleanliness < 0) cleanliness = 0;
 	weight      -= variation::weight;
+	if(weight < 0) weight = 0;
 	hunger      += variation::hunger;
+	if(hunger > max::hunger) hunger = max::hunger;
 	happiness   -= variation::happiness::general;
+	if(happiness < 0) happiness = 0;
 }
 
 //-----------------------------------------------------------------------------
 // * Change stateAccordingToPassedTime
 //-----------------------------------------------------------------------------
-void Pet::changeStateAccordingToPassedTime(unsigned int minutesPassed)
+void Pet::changeCharacteristicsAccordingToPassedTime(unsigned int minutesPassed)
 {
 	for(unsigned int i = 0 ; i < minutesPassed ; i++)
-		degradeState();
-}
-
-
-//=============================================================================
-// ▼ Etats
-// ----------------------------------------------------------------------------
-// Vérifie et modifie les états du familier (malade, sale, faim, heureux).
-//=============================================================================
-
-
-//-----------------------------------------------------------------------------
-// * Update state
-//-----------------------------------------------------------------------------
-void Pet::updateState()
-{
-	checkAliveState();
-	checkHealthState();
-	checkCleanlinessState();
-	checkHungerState();
-	checkHappinessState();
-	checkAliveState();
-}
-
-//-----------------------------------------------------------------------------
-// * Check Alive state
-//-----------------------------------------------------------------------------
-void Pet::checkAliveState()
-{
-	dead = (health == 0 || cleanliness == 0 || weight == 0 || hunger == 100);
-}
-
-//-----------------------------------------------------------------------------
-// * Check health state
-//-----------------------------------------------------------------------------
-void Pet::checkHealthState()
-{
-	sick = (health < 50);
-}
-
-//-----------------------------------------------------------------------------
-// * Check cleanliness state
-//-----------------------------------------------------------------------------
-void Pet::checkCleanlinessState()
-{
-	dirty = (cleanliness < 50);
-}
-
-//-----------------------------------------------------------------------------
-// * Check hunger state
-//-----------------------------------------------------------------------------
-void Pet::checkHungerState()
-{
-	hungry = (hunger > 50);
-}
-
-//-----------------------------------------------------------------------------
-// * Check happiness state
-//-----------------------------------------------------------------------------
-void Pet::checkHappinessState()
-{
-	sad   = (happiness < 25);
-	happy = (happiness > 75);
+		degradeCharacteristics();
 }
 
 
@@ -486,6 +448,59 @@ void Pet::writeInfos()
 	std::cout << GREEN << "\r  ✔ Données du familier sauvegardées!    ";
 	std::cout << RESET << std::endl;
 	file.close();
+}
+
+
+//=============================================================================
+// ▼ Time
+// ----------------------------------------------------------------------------
+//
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// * Get last session time
+//-----------------------------------------------------------------------------
+int Pet::getLastSessionTime()
+{
+	std::cout << BLUE << "\r    Récupéraction de la date de la dernière session...            " << RESET;
+
+	const char* fileName = files::lastSessionDate.c_str();
+	std::ifstream file(fileName);
+	if(!file.is_open()) {
+		file::errorCantOpen(fileName);
+		return 0;
+	}
+
+	std::string line;
+	getline(file,line);
+	file.close();
+
+	std::cout << GREEN << "\r  ✔ Date de la dernière session récupérée!            ";
+	std::cout << RESET << std::endl;
+
+	return types::stoi(line);
+}
+
+//-----------------------------------------------------------------------------
+// * Update pet state
+//-----------------------------------------------------------------------------
+void Pet::updateCharacteristics()
+{
+	int lastSessionTime, now, minutesLeft;
+	now = time(NULL);
+
+	const char* fileName = files::lastSessionDate.c_str();
+	if(file::exists(fileName)) {
+		lastSessionTime = getLastSessionTime();
+		now = time(NULL);
+		minutesLeft = (now - lastSessionTime) / 60;
+		std::cout << "      Nombre de minutes écoulées: " << minutesLeft << std::endl;
+		std::cout << BLUE << "    Mise à jour des caractéristiques depuis la dernière session..." << RESET;
+		changeCharacteristicsAccordingToPassedTime(minutesLeft);
+		std::cout << GREEN << "\r  ✔ Modifié les caractéristiques du familier!                     ";
+	} else
+		std::cout << GREEN << "\r  ✔ Pas besoin de modifier l'état du familier!                    ";
+	std::cout << RESET << std::endl;
 }
 
 

@@ -13,7 +13,9 @@
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
+#include <signal.h>      /* signal     */
 #include <SFML/Graphics.hpp>
+// #include <Time.hpp>
 
 #include "../lib/Button.h"
 #include "../lib/colors.cpp"
@@ -29,6 +31,7 @@
 
 using namespace std;
 using namespace sf;
+
 
 //=============================================================================
 // ▼ Variables globales
@@ -58,7 +61,7 @@ namespace sprite {
 	Sprite background;
 	Sprite initial;
 	Sprite dead;
-	Sprite	dirty;
+	Sprite dirty;
 	Sprite hungry;
 	Sprite sad;
 	Sprite sick;
@@ -79,6 +82,8 @@ namespace texture {
 
 Pet* pet;
 User* user;
+
+
 
 //=============================================================================
 // ▼ User
@@ -109,70 +114,6 @@ void getUser()
 void getPet()
 {
 	pet = new Pet();
-}
-
-//-----------------------------------------------------------------------------
-// * Get last session time
-//-----------------------------------------------------------------------------
-int getLastSessionTime()
-{
-	std::cout << BLUE << "    Récupéraction de la date de la dernière session..." << RESET;
-
-	const char* fileName = files::lastSessionDate.c_str();
-	std::ifstream file(fileName);
-	if(!file.is_open()) {
-		file::errorCantOpen(fileName);
-		return 0;
-	}
-
-	std::string line;
-	getline(file,line);
-	file.close();
-
-	std::cout << GREEN << "\r  ✔ Date de la dernière session récupérée!         ";
-	std::cout << RESET << std::endl;
-
-	return types::stoi(line);
-}
-
-//-----------------------------------------------------------------------------
-// * Write session time
-//-----------------------------------------------------------------------------
-void writeSessionTime()
-{
-	std::cout << BLUE << "    Sauvegarde de la date..." << RESET;
-
-	const char *fileName = files::lastSessionDate.c_str();
-	std::ofstream file(fileName);
-	if(!file.is_open()) return file::errorCantOpen(fileName);
-
-	file << time(NULL) << std::endl;
-
-	file.close();
-	std::cout << GREEN << "\r  ✔ Date sauvegardée!    ";
-	std::cout << RESET << std::endl;
-}
-
-//-----------------------------------------------------------------------------
-// * Update pet state
-//-----------------------------------------------------------------------------
-void updatePetState()
-{
-	int lastSessionTime, now, minutesLeft;
-	now = time(NULL);
-
-	std::cout << BLUE << "    Modification de l'état du familier..." << RESET;
-	const char* fileName = files::lastSessionDate.c_str();
-	if(file::exists(fileName)) {
-		lastSessionTime = getLastSessionTime();
-		now = time(NULL);
-		minutesLeft = (now - lastSessionTime) / 60;
-		std::cout << "Nombre de minutes passées: " << minutesLeft << std::endl;
-		pet->changeStateAccordingToPassedTime(minutesLeft);
-		std::cout << GREEN << "\r  ✔ Modifié l'état du familier!         ";
-	} else
-		std::cout << GREEN << "\r  ✔ Pas besoin de modifier l'état du familier!";
-	std::cout << RESET << std::endl;
 }
 
 
@@ -304,6 +245,18 @@ void checkPetStates()
 	else mainState.setState("Pet");
 }
 
+//-----------------------------------------------------------------------------
+// * Update state
+//-----------------------------------------------------------------------------
+void degradePetState(int sig)
+{
+	std::cout << "Degrade characteristics!" << std::endl;
+	pet->degradeCharacteristics();
+	pet->printCharacteristics();
+	signal(SIGALRM,degradePetState);
+	alarm(60);
+}
+
 //=============================================================================
 // ▼ Main
 // ----------------------------------------------------------------------------
@@ -341,8 +294,7 @@ void init()
 	std::cout << YELLOW << "Initialisation..." << RESET << std::endl;
 	getUser();
 	getPet();
-	pet->printCharacteristics();
-	updatePetState();
+	std::cout << std::endl;
 	pet->printCharacteristics();
 	getGenealogy();
 	std::cout << std::endl;
@@ -353,27 +305,79 @@ void init()
 	//setButton();
 	createWindow();
 
-sprite::initial.setPosition(400,450);
-sprite::hungry.setPosition(500,200);
-sprite::sad.setPosition(500,200);
-sprite::dirty.setPosition(500,200);
-//sprite::happy.setPosition(500,200);
-sprite::sick.setPosition(500,200);
-sprite::dead.setPosition(500,200);
+	sprite::initial.setPosition(400,450);
+	sprite::hungry.setPosition(500,200);
+	sprite::sad.setPosition(500,200);
+	sprite::dirty.setPosition(500,200);
+	//sprite::happy.setPosition(500,200);
+	sprite::sick.setPosition(500,200);
+	sprite::dead.setPosition(500,200);
 
-foodButton->sprite.setPosition(25,50);
-happyButton->sprite.setPosition(25,225);
-healButton->sprite.setPosition(25,400);
-washButton->sprite.setPosition(25,575);
+	foodButton->sprite.setPosition(25,50);
+	happyButton->sprite.setPosition(25,225);
+	healButton->sprite.setPosition(25,400);
+	washButton->sprite.setPosition(25,575);
 
-resetButton->sprite.setPosition(50,450);
-settingButton->sprite.setPosition(250,450);
-resumeButton->sprite.setPosition(454,225);
-quitButton->sprite.setPosition(450,450);
-shopButton->sprite.setPosition(650,450);
-parkButton->sprite.setPosition(850,450);
+	resetButton->sprite.setPosition(50,450);
+	settingButton->sprite.setPosition(250,450);
+	resumeButton->sprite.setPosition(454,225);
+	quitButton->sprite.setPosition(450,450);
+	shopButton->sprite.setPosition(650,450);
+	parkButton->sprite.setPosition(850,450);
+
+	signal(SIGALRM,degradePetState);
+	alarm(60);
 
 
+}
+
+//-----------------------------------------------------------------------------
+// * Check menu buttons
+//-----------------------------------------------------------------------------
+void checkMenuButtons()
+{
+	if (resetButton->isClicked(window)) {
+		cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
+		pet->generate(0);
+	}
+
+	if (settingButton->isClicked(window))
+		mainState.setState("Setting");		// envoie sur setting
+
+	if (parkButton->isClicked(window))
+		mainState.setState("Park");		// envoie sur park
+
+	if (quitButton->isClicked(window))
+		window.close();				// ferme la fenêtre
+
+	// if (shopButton->isClicked(window) == true)
+		// mainState.setState("Shop");		// envoie sur le shop
+
+	if (resumeButton->isClicked(window))
+		mainState.setState("Pet");		// reprend le jeu
+}
+
+//-----------------------------------------------------------------------------
+// * Check button action
+//-----------------------------------------------------------------------------
+void checkActionsButtons(Time& elapsed, Clock& clock)
+{
+	if(foodButton->isClicked(window)) {
+		pet->feed(20);
+		elapsed = clock.restart();
+	}
+	if(happyButton->isClicked(window)) {
+		pet->play();
+		elapsed = clock.restart();
+	}
+	if(healButton->isClicked(window)) {
+		pet->heal();
+		elapsed = clock.restart();
+	}
+	if(washButton->isClicked(window)) {
+		pet->wash();
+		elapsed = clock.restart();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -381,8 +385,9 @@ parkButton->sprite.setPosition(850,450);
 //-----------------------------------------------------------------------------
 void update()
 {
+		// Gestion du temps pour les bouttons
+		Clock clock;
 
-			
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
@@ -397,22 +402,15 @@ void update()
 				mainState.setState("Pause");
 
 			}
-/*
-			if (event.type == Event::TextEntered) {
-				if (event.text.unicode < 128)
-				std::cout << "tapé: " << static_cast<char>(event.text.unicode) << std::endl;
-			}
-*/
 		}
 
 		window.clear();
 		window.draw(sprite::background);
 
-		pet->updateState();
+		Time elapsed = clock.getElapsedTime();
 
-		if(mainState.getState() != "Pause"){
+		if(mainState.getState() != "Pause")
 			checkPetStates();
-		}
 
 		// mainState est l'état actuel du jeu, mainState.getState();, mainState.setState("coucou");
 
@@ -425,40 +423,16 @@ void update()
 			window.draw(resumeButton->sprite);
 			window.draw(parkButton->sprite);
 
-			if (resetButton->isClicked(window) == true)
-			{
-				cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
-			}
-/*			if (settingButton->isClicked(window) == true)
-			{
-				mainState.setState("Setting");		// envoie sur setting
-			}
-			if (parkButton->isClicked(window) == true)
-			{
-				mainState.setState("Park");		// envoie sur park
-			}
-*/			if (quitButton->isClicked(window) == true)
-			{
-				window.close();				// ferme la fenêtre
-			}
-/*			if (shopButton->isClicked(window) == true)
-			{
-				mainState.setState("Shop");		// envoie sur le shop
-			}
-*/			if (resumeButton->isClicked(window) == true)
-			{
-				mainState.setState("Pet");		// reprend le jeu
-			}
+			checkMenuButtons();
 		}
 
 		if(mainState.getState() == "Dead")
 		{
 			window.draw(sprite::initial);
 			window.draw(sprite::dead);
-			window.draw(foodButton->sprite);
-			window.draw(happyButton->sprite);
-			window.draw(washButton->sprite);
-			window.draw(healButton->sprite);
+		}
+		if(mainState.getState() != "Dead" && elapsed.asSeconds() > 2) {
+			checkActionsButtons(elapsed,clock);
 		}
 
 		if(mainState.getState() == "Dirty")
@@ -554,6 +528,24 @@ void deleteObjects()
 }
 
 //-----------------------------------------------------------------------------
+// * Write session time
+//-----------------------------------------------------------------------------
+void writeSessionTime()
+{
+	std::cout << BLUE << "    Sauvegarde de la date..." << RESET;
+
+	const char *fileName = files::lastSessionDate.c_str();
+	std::ofstream file(fileName);
+	if(!file.is_open()) return file::errorCantOpen(fileName);
+
+	file << time(NULL) << std::endl;
+
+	file.close();
+	std::cout << GREEN << "\r  ✔ Date sauvegardée!       ";
+	std::cout << RESET << std::endl;
+}
+
+//-----------------------------------------------------------------------------
 // * End
 //-----------------------------------------------------------------------------
 void end()
@@ -574,69 +566,3 @@ int main()
 
 	return 0;
 }
-                // window.draw(pause);
-/*
-                if (!texture.loadFromFile("images/Resume.jpg"))
-                {
-                        std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                    return 1;
-                }
-                menuResume.setTexture(texture);
-
-                if (!texture.loadFromFile("images/Setting.jpg"))
-                {
-                        std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                    return 1;
-                }
-                menuSetting.setTexture(texture);
-*/
-                //menuReset.setPosition(100,100);
-                // window.draw(menuReset);  // voir si pas de conflit avec window.clear plus bas
-            // }
-        // }
-        // window.clear();
-        // window.draw(backGround);
-/*
-        if(State == "Menu1")
-        {
-            if (!texture.loadFromFile("images/Menu1.jpg"))
-            {
-                    std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                return 1;
-            }
-            sprite.setTexture(texture);
-
-            window.draw(sprite);
-            window.display();
-        }
-
-        if(State == "Menu2")
-        {
-            if (!texture.loadFromFile("images/Menu2.jpg"))
-            {
-                    std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                return 1;
-            }
-            sprite.setTexture(texture);
-
-            window.draw(sprite);
-            window.display();
-        }
-
-        if(State == "Menu3")
-        {
-            if (!texture.loadFromFile("iamges/Menu3.jpg"))
-            {
-                    std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                return 1;
-            }
-            sprite.setTexture(texture);
-
-            window.draw(sprite);
-            window.display();
-        }
-*/
-    // }
-    // return 0;
-// }
-
