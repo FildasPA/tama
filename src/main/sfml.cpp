@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
+#include <signal.h>      /* signal     */
 #include <SFML/Graphics.hpp>
 
 #include "../lib/colors.cpp"
@@ -29,6 +30,7 @@
 
 using namespace std;
 using namespace sf;
+
 
 //=============================================================================
 // ▼ Variables globales
@@ -56,8 +58,8 @@ namespace texture {
 	Texture setting;
 }
 
-Pet* pet = new Pet();
-User* user = new User();
+Pet* pet;
+User* user;
 
 //=============================================================================
 // ▼ User
@@ -88,70 +90,6 @@ void getUser()
 void getPet()
 {
 	pet = new Pet();
-}
-
-//-----------------------------------------------------------------------------
-// * Get last session time
-//-----------------------------------------------------------------------------
-int getLastSessionTime()
-{
-	std::cout << BLUE << "    Récupéraction de la date de la dernière session..." << RESET;
-
-	const char* fileName = files::lastSessionDate.c_str();
-	std::ifstream file(fileName);
-	if(!file.is_open()) {
-		file::errorCantOpen(fileName);
-		return 0;
-	}
-
-	std::string line;
-	getline(file,line);
-	file.close();
-
-	std::cout << GREEN << "\r  ✔ Date de la dernière session récupérée!         ";
-	std::cout << RESET << std::endl;
-
-	return types::stoi(line);
-}
-
-//-----------------------------------------------------------------------------
-// * Write session time
-//-----------------------------------------------------------------------------
-void writeSessionTime()
-{
-	std::cout << BLUE << "    Sauvegarde de la date..." << RESET;
-
-	const char *fileName = files::lastSessionDate.c_str();
-	std::ofstream file(fileName);
-	if(!file.is_open()) return file::errorCantOpen(fileName);
-
-	file << time(NULL) << std::endl;
-
-	file.close();
-	std::cout << GREEN << "\r  ✔ Date sauvegardée!    ";
-	std::cout << RESET << std::endl;
-}
-
-//-----------------------------------------------------------------------------
-// * Update pet state
-//-----------------------------------------------------------------------------
-void updatePetState()
-{
-	int lastSessionTime, now, minutesLeft;
-	now = time(NULL);
-
-	std::cout << BLUE << "    Modification de l'état du familier..." << RESET;
-	const char* fileName = files::lastSessionDate.c_str();
-	if(file::exists(fileName)) {
-		lastSessionTime = getLastSessionTime();
-		now = time(NULL);
-		minutesLeft = (now - lastSessionTime) / 60;
-		std::cout << "Nombre de minutes passées: " << minutesLeft << std::endl;
-		pet->changeStateAccordingToPassedTime(minutesLeft);
-		std::cout << GREEN << "\r  ✔ Modifié l'état du familier!         ";
-	} else
-		std::cout << GREEN << "\r  ✔ Pas besoin de modifier l'état du familier!";
-	std::cout << RESET << std::endl;
 }
 
 
@@ -269,6 +207,14 @@ void checkPetStates()
 	if(pet->isHappy())  mainState.setState("Happy");
 }
 
+//-----------------------------------------------------------------------------
+// * Update state
+//-----------------------------------------------------------------------------
+void degradePetState()
+{
+	pet->degradeState();
+}
+
 //=============================================================================
 // ▼ Main
 // ----------------------------------------------------------------------------
@@ -306,8 +252,7 @@ void init()
 	std::cout << YELLOW << "Initialisation..." << RESET << std::endl;
 	getUser();
 	getPet();
-	pet->printCharacteristics();
-	updatePetState();
+	std::cout << std::endl;
 	pet->printCharacteristics();
 	getGenealogy();
 	std::cout << std::endl;
@@ -317,6 +262,8 @@ void init()
 	setSprites();
 	//setButton();
 	createWindow();
+	signal(SIGALRM,degradePetState);
+	alarm(60);
 }
 
 //-----------------------------------------------------------------------------
@@ -386,6 +333,24 @@ void deleteObjects()
 }
 
 //-----------------------------------------------------------------------------
+// * Write session time
+//-----------------------------------------------------------------------------
+void writeSessionTime()
+{
+	std::cout << BLUE << "    Sauvegarde de la date..." << RESET;
+
+	const char *fileName = files::lastSessionDate.c_str();
+	std::ofstream file(fileName);
+	if(!file.is_open()) return file::errorCantOpen(fileName);
+
+	file << time(NULL) << std::endl;
+
+	file.close();
+	std::cout << GREEN << "\r  ✔ Date sauvegardée!       ";
+	std::cout << RESET << std::endl;
+}
+
+//-----------------------------------------------------------------------------
 // * End
 //-----------------------------------------------------------------------------
 void end()
@@ -406,69 +371,3 @@ int main()
 
 	return 0;
 }
-                // window.draw(pause);
-/*
-                if (!texture.loadFromFile("images/Resume.jpg"))
-                {
-                        std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                    return 1;
-                }
-                menuResume.setTexture(texture);
-
-                if (!texture.loadFromFile("images/Setting.jpg"))
-                {
-                        std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                    return 1;
-                }
-                menuSetting.setTexture(texture);
-*/
-                //menuReset.setPosition(100,100);
-                // window.draw(menuReset);  // voir si pas de conflit avec window.clear plus bas
-            // }
-        // }
-        // window.clear();
-        // window.draw(backGround);
-/*
-        if(State == "Menu1")
-        {
-            if (!texture.loadFromFile("images/Menu1.jpg"))
-            {
-                    std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                return 1;
-            }
-            sprite.setTexture(texture);
-
-            window.draw(sprite);
-            window.display();
-        }
-
-        if(State == "Menu2")
-        {
-            if (!texture.loadFromFile("images/Menu2.jpg"))
-            {
-                    std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                return 1;
-            }
-            sprite.setTexture(texture);
-
-            window.draw(sprite);
-            window.display();
-        }
-
-        if(State == "Menu3")
-        {
-            if (!texture.loadFromFile("iamges/Menu3.jpg"))
-            {
-                    std::cout<<" Erreur chargement de la texture! "<<std::endl;
-                return 1;
-            }
-            sprite.setTexture(texture);
-
-            window.draw(sprite);
-            window.display();
-        }
-*/
-    // }
-    // return 0;
-// }
-
