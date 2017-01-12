@@ -41,7 +41,16 @@ RenderWindow window;
 State mainState;
 
 // Button
-Button* resetButton = new Button("images/reset.png");
+Button* resetButton = new Button("images/b_Oeuf.png");
+Button* foodButton = new Button("images/b_Faim.png");
+Button* happyButton = new Button("images/b_Calin.png");
+Button* healButton = new Button("images/b_Soin.png");
+Button* washButton = new Button("images/b_Douche.png");
+Button* settingButton = new Button("images/b_Reglage.png");
+Button* resumeButton = new Button("images/b_Play.png");
+Button* quitButton = new Button("images/b_Quit.png");
+Button* shopButton = new Button("images/b_Shop.png");
+Button* parkButton = new Button("images/b_Arbre.png");
 
 
 // Sprites
@@ -292,6 +301,7 @@ void checkPetStates()
 	if(pet->isHungry())	mainState.setState("Hungry");
 	if(pet->isSick())	mainState.setState("Sick");
 	if(pet->isDead())	mainState.setState("Dead");
+	else mainState.setState("Pet");
 }
 
 //=============================================================================
@@ -350,6 +360,20 @@ sprite::dirty.setPosition(500,200);
 //sprite::happy.setPosition(500,200);
 sprite::sick.setPosition(500,200);
 sprite::dead.setPosition(500,200);
+
+foodButton->sprite.setPosition(25,50);
+happyButton->sprite.setPosition(25,225);
+healButton->sprite.setPosition(25,400);
+washButton->sprite.setPosition(25,575);
+
+resetButton->sprite.setPosition(50,450);
+settingButton->sprite.setPosition(250,450);
+resumeButton->sprite.setPosition(454,225);
+quitButton->sprite.setPosition(450,450);
+shopButton->sprite.setPosition(650,450);
+parkButton->sprite.setPosition(850,450);
+
+
 }
 
 //-----------------------------------------------------------------------------
@@ -357,7 +381,7 @@ sprite::dead.setPosition(500,200);
 //-----------------------------------------------------------------------------
 void update()
 {
-	resetButton->sprite.setPosition(150,450);
+
 			
 	while (window.isOpen()) {
 		Event event;
@@ -385,18 +409,45 @@ void update()
 		window.draw(sprite::background);
 
 		pet->updateState();
-if(mainState.getState() != "Pause"){
-		checkPetStates();
-}
+
+		if(mainState.getState() != "Pause"){
+			checkPetStates();
+		}
 
 		// mainState est l'état actuel du jeu, mainState.getState();, mainState.setState("coucou");
 
 		if(mainState.getState() == "Pause")
 		{
 			window.draw(resetButton->sprite);
+			window.draw(settingButton->sprite);
+			window.draw(quitButton->sprite);
+			window.draw(shopButton->sprite);
+			window.draw(resumeButton->sprite);
+			window.draw(parkButton->sprite);
+
 			if (resetButton->isClicked(window) == true)
 			{
 				cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
+			}
+/*			if (settingButton->isClicked(window) == true)
+			{
+				mainState.setState("Setting");		// envoie sur setting
+			}
+			if (parkButton->isClicked(window) == true)
+			{
+				mainState.setState("Park");		// envoie sur park
+			}
+*/			if (quitButton->isClicked(window) == true)
+			{
+				window.close();				// ferme la fenêtre
+			}
+/*			if (shopButton->isClicked(window) == true)
+			{
+				mainState.setState("Shop");		// envoie sur le shop
+			}
+*/			if (resumeButton->isClicked(window) == true)
+			{
+				mainState.setState("Pet");		// reprend le jeu
 			}
 		}
 
@@ -404,30 +455,50 @@ if(mainState.getState() != "Pause"){
 		{
 			window.draw(sprite::initial);
 			window.draw(sprite::dead);
+			window.draw(foodButton->sprite);
+			window.draw(happyButton->sprite);
+			window.draw(washButton->sprite);
+			window.draw(healButton->sprite);
 		}
 
 		if(mainState.getState() == "Dirty")
 		{
 			window.draw(sprite::initial);
 			window.draw(sprite::dirty);
+			window.draw(foodButton->sprite);
+			window.draw(happyButton->sprite);
+			window.draw(washButton->sprite);
+			window.draw(healButton->sprite);
 		}
 
 		if(mainState.getState() == "Hungry")
 		{
 			window.draw(sprite::initial);
 			window.draw(sprite::hungry);
+			window.draw(foodButton->sprite);
+			window.draw(happyButton->sprite);
+			window.draw(washButton->sprite);
+			window.draw(healButton->sprite);
 		}
 
 		if(mainState.getState() == "Sad")
 		{
 			window.draw(sprite::initial);
 			window.draw(sprite::sad);
+			window.draw(foodButton->sprite);
+			window.draw(happyButton->sprite);
+			window.draw(washButton->sprite);
+			window.draw(healButton->sprite);
 		}
 
 		if(mainState.getState() == "Sick")
 		{
 			window.draw(sprite::initial);
 			window.draw(sprite::sick);
+			window.draw(foodButton->sprite);
+			window.draw(happyButton->sprite);
+			window.draw(washButton->sprite);
+			window.draw(healButton->sprite);
 		}
 /*
 		if(mainState.getState() == "Setting")
@@ -463,6 +534,10 @@ if(mainState.getState() != "Pause"){
 		if(mainState.getState() == "Pet")
 		{
 			window.draw(sprite::initial);
+			window.draw(foodButton->sprite);
+			window.draw(happyButton->sprite);
+			window.draw(washButton->sprite);
+			window.draw(healButton->sprite);
 		}
 
 		window.display();
