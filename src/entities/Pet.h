@@ -16,12 +16,12 @@ class Pet
 
 		// Charactéristiques
 		std::string name;
-		unsigned int generation;
-		unsigned int health;
-		unsigned int cleanliness;
-		unsigned int weight;
-		unsigned int hunger;
-		unsigned int happiness;
+		int generation;
+		int health;
+		int cleanliness;
+		int weight;
+		int hunger;
+		int happiness;
 
 		// Etats
 		bool dead;
@@ -31,12 +31,12 @@ class Pet
 		bool happy, sad;
 
 		// Vérifier les états
-		void updateState();
-		void checkAliveState();
-		void checkHealthState();
-		void checkCleanlinessState();
-		void checkHungerState();
-		void checkHappinessState();
+		// void updateState();
+		// void checkAliveState();
+		// void checkHealthState();
+		// void checkCleanlinessState();
+		// void checkHungerState();
+		// void checkHappinessState();
 
 		// Modifications
 		void decreaseHunger(int);
@@ -45,8 +45,11 @@ class Pet
 		void increaseWeight(int);
 
 		// Dégradation
-		void decayState();
-		void decayStateAccordingToPassedTime(unsigned int);
+		void degradeCharacteristics();
+		void degradeStateAccordingToPassedTime(unsigned int);
+
+		void updateCharacteristics();
+		int getLastSessionTime();
 
 	public:
 
@@ -97,7 +100,7 @@ class Pet
 
 		// Affichage
 		void printCharacteristics();
-		void changeStateAccordingToPassedTime(unsigned int);
+		void changeCharacteristicsAccordingToPassedTime(unsigned int);
 };
 
 #endif
