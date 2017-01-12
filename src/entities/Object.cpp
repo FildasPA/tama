@@ -1,59 +1,47 @@
 
-#include <vector>
 #include <string>
-#include "Shop.h"
+// #include <SFML/Graphics.hpp>
 
-//=============================================================================
-// ▼ Constantes
-//=============================================================================
-namespace max {
-	const unsigned int storage = 10;
-}
-
+#include "Object.h"
 
 //=============================================================================
 // ▼ Fonctions primaires
 // ----------------------------------------------------------------------------
-//
+// Constructeurs
 //=============================================================================
+
 
 //-----------------------------------------------------------------------------
 // * Constructeur
 //-----------------------------------------------------------------------------
-Shop::Shop()
+Object::Object()
 {
-
-}
-
-
-
-//-----------------------------------------------------------------------------
-// * Generate Object List
-//-----------------------------------------------------------------------------
-void Shop::generateObjects()
-{
-	unsigned int n;
-	n = rand() % max::storage;
-
-	// créer n objets aléatoires dans la liste d'objets
-}
-
-
-//-----------------------------------------------------------------------------
-// * Create food
-//-----------------------------------------------------------------------------
-void Shop::createFood()
-{
+	id          = 0;
+	name        = "";
+	description = "";
 }
 
 //-----------------------------------------------------------------------------
-// * Buy object
-// Achète l'objet sélectionné
+// * Constructeur (unsigned int)
+// Créer un objet Object à partir son id.
+// Récupère les informations dans un fichier.
 //-----------------------------------------------------------------------------
-void Shop::buySelectedObject()
+Object::Object(unsigned int id)
 {
-	// currObjectId +
+	id          = id;
+	// name        = ...;
+	// description = ...;
 }
 
-
-
+//-----------------------------------------------------------------------------
+// * Constructeur (unsigned int,string,string)
+//-----------------------------------------------------------------------------
+Object::Object(unsigned int id,std::string name,std::string picture)
+{
+	this->id   = id;
+	this->name = name;
+	// if(!texture.loadFromFile(picture)) {
+   		// return;
+	// }
+	// sprite.setTexture(texture);
+}

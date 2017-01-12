@@ -1,46 +1,57 @@
 
+#include <vector>
 #include <string>
-// #include <SFML/Graphics.hpp>
-#include "Object.h"
+
+#include "Shop.h"
+
+//=============================================================================
+// ▼ Constantes
+//=============================================================================
+namespace max {
+	const unsigned int storage = 10;
+}
+
 
 //=============================================================================
 // ▼ Fonctions primaires
 // ----------------------------------------------------------------------------
-// Constructeurs
+//
 //=============================================================================
-
 
 //-----------------------------------------------------------------------------
 // * Constructeur
 //-----------------------------------------------------------------------------
-Object::Object()
+Shop::Shop()
 {
-	id          = NULL;
-	name        = "";
-	description = "";
 }
 
 //-----------------------------------------------------------------------------
-// * Constructeur (unsigned int)
-// Créer un objet Object à partir son id.
-// Récupère les informations dans un fichier.
+// * Generate Object List
 //-----------------------------------------------------------------------------
-Object::Object(unsigned int id)
+void Shop::generateObjects()
 {
-	id          = id;
-	// name        = ...;
-	// description = ...;
+	unsigned int n;
+	n = rand() % max::storage;
+
+	// créer n objets aléatoires dans la liste d'objets
+}
+
+
+//-----------------------------------------------------------------------------
+// * Create food
+//-----------------------------------------------------------------------------
+void Shop::createFood()
+{
 }
 
 //-----------------------------------------------------------------------------
-// * Constructeur (unsigned int,string,string)
+// * Buy object
+// Achète l'objet sélectionné
 //-----------------------------------------------------------------------------
-Object::Object(unsigned int id,std::string name,std::string picture)
+void Shop::buySelectedObject()
 {
-	this->id   = id;
-	this->name = name;
-	// if(!texture.loadFromFile(picture)) {
-   		// return;
-	// }
-	// sprite.setTexture(texture);
+	// currObjectId +
 }
+
+
+

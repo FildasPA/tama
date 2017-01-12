@@ -29,7 +29,14 @@
 *.app
 
 # Perso
+<<<<<<< HEAD
 bin/*
 TAMA
 *~
 test
+bin/*
+saves/*
+TAMA
+tama
+test
+sfml
