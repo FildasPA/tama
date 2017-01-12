@@ -23,13 +23,6 @@ class Pet
 		int hunger;
 		int happiness;
 
-		// Etats
-		bool dead;
-		bool sick;
-		bool dirty;
-		bool hungry;
-		bool happy, sad;
-
 		// Modifications
 		void decreaseHunger(int);
 		void increaseHunger(int);
