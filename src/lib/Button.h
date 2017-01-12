@@ -16,7 +16,6 @@ class Button
 
 	private:
 		Texture texture;
-		
 
 	public:
 		Sprite  sprite;

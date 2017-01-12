@@ -31,7 +31,6 @@ class Pet
 		bool happy, sad;
 
 		// Vérifier les états
-		void updateState();
 		void checkAliveState();
 		void checkHealthState();
 		void checkCleanlinessState();
@@ -75,6 +74,7 @@ class Pet
 		void setValueFromString(std::string,std::string,bool&);
 
 		// Modifications
+		void updateState();
 		void degradeState();
 		void changeHappiness(int n);
 

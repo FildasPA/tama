@@ -15,10 +15,10 @@
 #include <unistd.h>
 #include <SFML/Graphics.hpp>
 
+#include "../lib/Button.h"
 #include "../lib/colors.cpp"
 #include "../lib/types.h"
 #include "../lib/file.h"
-#include "../lib/Button.h"
 #include "../lib/State.h"
 
 #include "../conf/files_names.h"
@@ -43,21 +43,33 @@ State mainState;
 // Button
 Button* resetButton = new Button("images/reset.png");
 
+
 // Sprites
 namespace sprite {
 	Sprite background;
+	Sprite initial;
+	Sprite dead;
+	Sprite	dirty;
+	Sprite hungry;
+	Sprite sad;
+	Sprite sick;
 }
+
+
 
 // Textures
 namespace texture {
 	Texture background;
-	Texture pause;
-	Texture resume;
-	Texture setting;
+	Texture initial;
+	Texture dead;
+	Texture dirty;
+	Texture hungry;
+	Texture sad;
+	Texture sick;
 }
 
-Pet* pet = new Pet();
-User* user = new User();
+Pet* pet;
+User* user;
 
 //=============================================================================
 // ▼ User
@@ -208,8 +220,14 @@ bool loadTexture(Texture& texture, const char *fileName)
 //-----------------------------------------------------------------------------
 void loadTextures()
 {
-	loadTexture(texture::background,"images/lac.jpg");
-	loadTexture(texture::pause,     "images/Background_medium.jpg");
+	loadTexture(texture::background,	"images/lac.jpg");
+	loadTexture(texture::initial,	"images/petNormal.png");
+	loadTexture(texture::dead,		"images/Crane.png");
+	loadTexture(texture::dirty,    	"images/Sale.png");
+	loadTexture(texture::hungry,	"images/Faim.png");
+	loadTexture(texture::sad,		"images/Smiley_Triste.png");
+	loadTexture(texture::sick,		"images/Soin.png");
+
 }
 
 
@@ -225,6 +243,12 @@ void loadTextures()
 void setSprites()
 {
 	sprite::background.setTexture(texture::background);
+	sprite::initial.setTexture(texture::initial);
+	sprite::dead.setTexture(texture::dead);
+	sprite::dirty.setTexture(texture::dirty);
+	sprite::hungry.setTexture(texture::hungry);
+	sprite::sad.setTexture(texture::sad);
+	sprite::sick.setTexture(texture::sick);
 }
 
 //=============================================================================
@@ -262,11 +286,12 @@ void updateBackground(Texture& texture)
 //-----------------------------------------------------------------------------
 void checkPetStates()
 {
-	if(pet->isDead())   mainState.setState("Dead");
-	if(pet->isHungry()) mainState.setState("Hungry");
-	if(pet->isDirty())  mainState.setState("Dirty");
-	if(pet->isSad())    mainState.setState("Sad");
-	if(pet->isHappy())  mainState.setState("Happy");
+	if(pet->isSad())	mainState.setState("Sad");
+	if(pet->isHappy())	mainState.setState("Happy");
+	if(pet->isDirty())	mainState.setState("Dirty");
+	if(pet->isHungry())	mainState.setState("Hungry");
+	if(pet->isSick())	mainState.setState("Sick");
+	if(pet->isDead())	mainState.setState("Dead");
 }
 
 //=============================================================================
@@ -317,6 +342,14 @@ void init()
 	setSprites();
 	//setButton();
 	createWindow();
+
+sprite::initial.setPosition(400,450);
+sprite::hungry.setPosition(500,200);
+sprite::sad.setPosition(500,200);
+sprite::dirty.setPosition(500,200);
+//sprite::happy.setPosition(500,200);
+sprite::sick.setPosition(500,200);
+sprite::dead.setPosition(500,200);
 }
 
 //-----------------------------------------------------------------------------
@@ -324,6 +357,8 @@ void init()
 //-----------------------------------------------------------------------------
 void update()
 {
+	resetButton->sprite.setPosition(150,450);
+			
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
@@ -335,24 +370,77 @@ void update()
 
 			if((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)) {
 				std::cout << "Pause!" << std::endl;
-				mainState.setState("Menu");
+				mainState.setState("Pause");
 
 			}
-
+/*
 			if (event.type == Event::TextEntered) {
 				if (event.text.unicode < 128)
 				std::cout << "tapé: " << static_cast<char>(event.text.unicode) << std::endl;
 			}
+*/
 		}
 
 		window.clear();
 		window.draw(sprite::background);
 
+		pet->updateState();
+if(mainState.getState() != "Pause"){
 		checkPetStates();
+}
 
 		// mainState est l'état actuel du jeu, mainState.getState();, mainState.setState("coucou");
 
-		if(mainState.getState() == "Menu")
+		if(mainState.getState() == "Pause")
+		{
+			window.draw(resetButton->sprite);
+			if (resetButton->isClicked(window) == true)
+			{
+				cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
+			}
+		}
+
+		if(mainState.getState() == "Dead")
+		{
+			window.draw(sprite::initial);
+			window.draw(sprite::dead);
+		}
+
+		if(mainState.getState() == "Dirty")
+		{
+			window.draw(sprite::initial);
+			window.draw(sprite::dirty);
+		}
+
+		if(mainState.getState() == "Hungry")
+		{
+			window.draw(sprite::initial);
+			window.draw(sprite::hungry);
+		}
+
+		if(mainState.getState() == "Sad")
+		{
+			window.draw(sprite::initial);
+			window.draw(sprite::sad);
+		}
+
+		if(mainState.getState() == "Sick")
+		{
+			window.draw(sprite::initial);
+			window.draw(sprite::sick);
+		}
+/*
+		if(mainState.getState() == "Setting")
+		{
+			resetButton->sprite.setPosition(100,100);
+			window.draw(resetButton->sprite);
+			if (resetButton->isClicked(window) == true)
+			{
+				cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
+			}
+		}
+*/
+/*		if(mainState.getState() == "Shop")
 		{
 			resetButton->sprite.setPosition(100,100);
 			window.draw(resetButton->sprite);
@@ -362,7 +450,7 @@ void update()
 			}
 		}
 
-		if(mainState.getState() == "Menu")
+		if(mainState.getState() == "Park")
 		{
 			resetButton->sprite.setPosition(100,100);
 			window.draw(resetButton->sprite);
@@ -370,6 +458,11 @@ void update()
 			{
 				cout<<"ça marche bordel"<<endl;		// FONCTION DE JUJU! pour re-générer le pet
 			}
+		}
+*/
+		if(mainState.getState() == "Pet")
+		{
+			window.draw(sprite::initial);
 		}
 
 		window.display();
