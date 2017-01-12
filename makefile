@@ -41,7 +41,7 @@ LTAMA = $(EXETAMA).o
 DTAMA = $(addprefix $(BIN)/,$(LTAMA))
 
 # Définit les dépendances pour sfml
-LSFML = $(EXESFML).o $(LIB)
+LSFML = $(EXESFML).o $(CONF) $(ENTI) $(LIB)
 DSFML = $(addprefix $(BIN)/,$(LSFML))
 
 # Définit les dépendances pour test
